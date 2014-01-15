@@ -21,6 +21,17 @@ class Article{
 	protected $text;
 
 
+	/**
+	 * @Column(type="integer");
+	 */
+	protected $seq;
+
+	/**
+	 * @ManyToOne(targetEntity="Component")
+	 */
+	protected $component;
+
+
 	public function getId(){
 		return $this->id;
 	}
@@ -31,6 +42,22 @@ class Article{
 
 	public function setText($text){
 		$this->text = $text;
+	}
+
+	public function getSeq(){
+		return $this->seq;
+	}
+
+	public function setSeq($seq){
+		$this->seq = $seq;
+	}
+
+	public function getComponent(){
+		return $this->component;
+	}
+
+	public function setComponent($com){
+		$this->component = $com;
 	}
 }
 
