@@ -56,6 +56,8 @@ class ComponentResource
 		 * Install new component 
 		 */ 
 		$this->rest->post('/template/{vendor}/{name}/component',
+			//TODO check if component with this name and template
+			//exists. If yes, return error.
 		       	function($vendor, $name, Request $request) use($em){ 
 
 			$template = Template::findTemplate($name, $vendor, $em);		

@@ -64,6 +64,8 @@ class TemplateResource
 		 * Install new template
 		 */
 		$this->rest->post('/template', function(Request $request) use($em){ 
+			//TODO check if the template from this vendor with this
+			//name exists and if yes return error.
 			$msg = $request->getContent();
 			$template = json_decode($msg);
 			if (!$template){
