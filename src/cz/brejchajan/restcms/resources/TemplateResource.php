@@ -20,35 +20,63 @@ class TemplateResource
 	private $rest;
 	private $em;
 
-	public function __construct($em){
+	public function __construct($em, $rest){
 		$this->em = $em;
-		$this->rest = new Silex\Application();
+		$this->rest = $rest;
 		$app = $this->rest;	
 		//Resource rest implementation
-		$this->rest->get('template/{name}', function($name) use($app){
-			return "Teplate name: " . $name;	
+		/**
+		 * List all installed templates 
+		 */
+		$this->rest->get('/template', function() use($em){
+			$qb = $em->createQueryBuilder();
+			$qb->select('t')
+				->from('Template', 't');
+			$q = $qb->getQuery();
+			$result = $q->getArrayResult();
+			$json = json_encode($result);
+
+			if($json == NULL){
+				return new Response("Error retrieving objects from database.", 500);
+			}
+			return new Response($json, 200);	
 		});
 
-		$this->rest->post('template', function(Request $request) use($em){ 
+		/**
+		 * List all installed templates from particular vendor
+		 */
+		$this->rest->get('/template/{vendor}', function($vendor) use($em){
+			$qb = $em->createQueryBuilder();
+			$qb->select('t')
+				->from('Template', 't')
+				->where("t.vendor = '".$vendor."'");
+			$q = $qb->getQuery();
+			$result = $q->getArrayResult();
+			$json = json_encode($result);
+
+			if($json == NULL){
+				return new Response("Error retrieving objects from database.", 500);
+			}
+			return new Response($json, 200);	
+		});
+		
+		/**
+		 * Install new template
+		 */
+		$this->rest->post('/template', function(Request $request) use($em){ 
 			$msg = $request->getContent();
 			$template = json_decode($msg);
 			if (!$template){
-				return new Response("Unable to parse JSON string.", 201);	
+				return new Response("Unable to parse JSON string.", 422);	
 			}
-			$newTemplate = new Template($template->name, $template->vendor);
+			$newTemplate = new Template(Helper::getNextId('Template', $em), $template->name, $template->vendor);
 			$newTemplate->setInstalled(new DateTime());
 				
-			$newTemplate->setId(Helper::getNextId('Template', $em));
-
 			$em->persist($newTemplate);
 			$em->flush();	
 			
-			return new Response("Template named: " . $template->name . " successfully added.", 200);
+			return new Response("/template/".$newTemplate->getVendor()."/".$newTemplate->getName()."", 201);
 		});
-	}
-
-	public function run(){
-		$this->rest->run();
 	}
 }
 

@@ -27,7 +27,7 @@ class Article{
 	protected $seq;
 
 	/**
-	 * @ManyToOne(targetEntity="Component")
+	 * @ManyToOne(targetEntity="Component", inversedBy="articles") 
 	 */
 	protected $component;
 

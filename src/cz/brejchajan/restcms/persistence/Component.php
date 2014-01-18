@@ -5,9 +5,9 @@
 class Component{
 
 	/**
-	 * @Id @ManyToOne(targetEntity="Template", inversedBy="components")
+	 * @Id @ManyToOne(targetEntity="Template", inversedBy="t_components")
 	 */
-	protected $templateName;
+	protected $template;
 
 	/**
 	 * @Id @Column(type="string")
@@ -15,26 +15,28 @@ class Component{
 	protected $name;
 
 	/**
-	 * @Column(type="integer", unique=true) 
+	 * @OneToMany(targetEntity="Article", mappedBy="component")
+	 */
+	protected $articles;
+	
+	/**
+	 * @Id
+	 * @Column(type="integer", unique=true)
 	 */
 	protected $id;
-
-
-	public function __construct($name, $templateName){
+	
+	public function __construct($id, $name, $template){
+		$this->id = $id;
 		$this->name = $name;
-		$this->templateName = $templateName;
+		$this->template = $template;
 	}
 
-	public function getTemplateName(){
-		return $this->templateName;
+	public function getTemplate(){
+		return $this->template;
 	}
 
 	public function getName(){
 		return $this->name;
-	}
-
-	public function setId($id){
-		$this->id = $id;
 	}
 
 	public function getId(){

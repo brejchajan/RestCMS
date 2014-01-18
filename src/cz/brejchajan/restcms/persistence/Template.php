@@ -26,16 +26,18 @@ class Template{
 	protected $installed;
 
 	/**
-	 * @OneToMany(targetEntity="Component", mappedBy="templates", cascade={"ALL"})
+	 * @OneToMany(targetEntity="Component", mappedBy="template", cascade={"ALL"})
 	 */
-	protected $components;
+	protected $t_components;
+
 
 	/**
+	 * @Id 
 	 * @Column(type="integer", unique=true)
 	 */
 	protected $id;
-
-	public function __construct($name, $vendor){
+	public function __construct($id, $name, $vendor){
+		$this->id = $id;
 		$this->name = $name;
 		$this->vendor = $vendor;
 	}
@@ -56,11 +58,24 @@ class Template{
 		$this->installed = $installed;
 	}
 
-	public function setId($id){
-		$this->id = $id;
-	}
-
 	public function getId(){
 		return $this->id;
+	}
+	
+	public static function findTemplate($name, $vendor, $em){
+		$qb = $em->createQueryBuilder();
+		$qb->select('t')
+			->from('Template', 't')
+			->where($qb->expr()->orX(
+				$qb->expr()->eq("t.vendor", "'$vendor'"),
+				$qb->expr()->eq("t.name", "'$name'")
+			));
+		$q = $qb->getQuery();
+		$templateArr = $q->getResult();
+		if ($templateArr > 0){
+			$template = $templateArr[0];
+			return $template;
+		}
+		else return null;
 	}
 }
