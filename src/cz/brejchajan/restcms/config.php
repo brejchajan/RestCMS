@@ -6,6 +6,9 @@
  * All rights reserved
  */
 
+/** Timezone settings */
+date_default_timezone_set("Europe/Prague");
+
 /** Project */
 define("PROJECTDIR", "/Users/janbrejcha/Web/www/restcms");
 define ("SRCDIR", PROJECTDIR . "/src/cz/brejchajan/restcms");
