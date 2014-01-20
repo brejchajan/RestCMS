@@ -1,0 +1,41 @@
+/**
+	Flower JS application default css file
+	it is responsible for styling all JS components in Flower
+*/
+
+.articleDiv {
+	min-width: 400px;
+	min-height: 50px;
+	border-radius: 20px;
+	background-color: green;
+	background-color: rgba(0, 255, 0, 0.1);
+}
+
+.articleToolBarEditBox {
+	margin: 5px;
+}
+
+
+/* 
+	FACTORY STYLE FOR FLOWER COMPONENTS
+	DO NOT EDIT UNLESS YOU REALLY KNOW WHAT YOU ARE DOING.
+*/
+
+#flowerTextEditor {
+	min-height: 100px;
+	border-style: solid;
+	border-width: 1px;
+	border-color: rgba(0, 255, 0, 0.3);
+}
+
+.selected {
+	color: red;
+	font-weight: bold;
+	margin: 3px;
+}
+
+.deselected {
+	color: blue;
+	font-weight: normal;
+	margin: 3px;
+}
