@@ -1,24 +1,21 @@
 <?php
 require_once(__DIR__ . "/../bootstrap.php");
 require_once(__DIR__ . "/HelperTest.php");
-use \Doctrine\DBAL\LockMode;
-$test = new HelperTest($em);
+require_once(__DIR__ . "/ComponentTest.php");
+require_once(__DIR__ . "/TemplateTest.php");
+require_once(__DIR__ . "/ArticleTest.php");
 
-$test->run();
+$test1 = new HelperTest($em);
 
+$test1->run();
 
+$test2 = new ComponentTest($em);
+$test2->run();
 
-/*$app = new RestCms($em);
-$app->run();
- */
-$vendor = "test";
-$name = "test1";
-			$newTemplate = new Template(Helper::getNextId('Template', $em), "mytemplate3", "brejchaja");
-			$newTemplate->setInstalled(new DateTime());
-				
-			$em->persist($newTemplate);
-			$em->flush();	
-			
-			return new Response("/template/".$newTemplate->getVendor()."/".$newTemplate->getName()."", 201);
-	
+$test3 = new TemplateTest($em);
+$test3->run();
+
+$test4 = new ArticleTest($em);
+$test4->run();
+
 ?>
