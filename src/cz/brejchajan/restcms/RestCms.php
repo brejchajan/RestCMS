@@ -9,12 +9,13 @@ require_once("config.php");
 require_once(PROJECTDIR . "/bootstrap.php");
 require_once(SRCDIR . "/resources/TemplateResource.php");
 require_once(SRCDIR . "/resources/ComponentResource.php");
-
+require_once(SRCDIR . "/resources/ArticleResource.php");
 
 class RestCms{
 
 	private $templateResource;
 	private $componentResource;
+	private $articleResource;
 	private $rest;
 	///Entity Manager
 	private $em;
@@ -24,6 +25,7 @@ class RestCms{
 		$this->rest = new Silex\Application();
 		$this->templateResource = new TemplateResource($em, $this->rest);
 		$this->componentResource = new ComponentResource($em, $this->rest);
+		$this->articleResource = new ArticleResource($em, $this->rest);
 	}
 
 

@@ -19,6 +19,7 @@ class Helper{
 		$id = $lastTemplate->getId();
 		return $id + 1;
 	}
+	
 
 	public static function getTemplateId($vendor, $name, $em){
 		$qb = $em->createQueryBuilder();
