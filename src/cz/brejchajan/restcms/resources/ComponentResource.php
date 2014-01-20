@@ -56,8 +56,6 @@ class ComponentResource
 		 * Install new component 
 		 */ 
 		$this->rest->post('/template/{vendor}/{name}/component',
-			//TODO check if component with this name and template
-			//exists. If yes, return error.
 		       	function($vendor, $name, Request $request) use($em){ 
 
 			$template = Template::findTemplate($name, $vendor, $em);		
@@ -69,14 +67,15 @@ class ComponentResource
 			if (!$component){
 				return new Response("Unable to parse JSON string.", 422);	
 			}
-			
+			if (Component::isInstalled($template, $component->name, $em))
+				return new Response("This component is already installed", 422);			
 			$newComponent = new Component(Helper::getNextId('Component', $em),
 			       				$component->name, $template);
 				
 			$em->persist($newComponent);
 			$em->flush();	
 			
-			return new Response("/template/$vendor/$name/component/".$newComponent->getName()."", 200);
+			return new Response("/template/$vendor/$name/component/".$newComponent->getName()."", 201);
 		});
 		 
 	}
