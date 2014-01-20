@@ -1,5 +1,5 @@
 <?php
-/** Part of the RestCMS priject.
+/** Part of the RestCMS project.
  * @author Jan Brejcha 2014,
  * all rights reserved.
  */
@@ -30,7 +30,16 @@ class Article{
 	 * @ManyToOne(targetEntity="Component", inversedBy="articles") 
 	 */
 	protected $component;
-
+	
+	/**
+	 * Constructor
+	 * @param seq 		the sequence number - to be able to order the articles
+	 * @param component 	the component that is parent of this Article
+	 */
+	public function __construct($seq, $component){
+		$this->seq = $seq;
+		$this->component = $component;
+	}
 
 	public function getId(){
 		return $this->id;
@@ -58,6 +67,29 @@ class Article{
 
 	public function setComponent($com){
 		$this->component = $com;
+	}
+
+	/**
+	 * Returns next sequence number for given component
+	 * @param $component 	the future parent component of the Article
+	 * @param $en		Doctrine EntityManager.
+	 */	
+	public static function getNextSeq($component, $em){
+		$qb = $em->createQueryBuilder();
+
+		$qb->select('a')
+			->from('Article', 'a')
+			->where("a.component = '".$component->getId()."'")
+		       	->orderBy('a.seq', 'DESC')
+			->setMaxResults('1');
+		$q = $qb->getQuery();
+		$res = $q->getResult();
+		if (count($res) > 0){
+			$lastArticle = $res[0];
+			$id = $lastArticle->getSeq();
+			return $id + 1;
+		}
+		return 0;
 	}
 }
 

@@ -66,16 +66,30 @@ class Template{
 		$qb = $em->createQueryBuilder();
 		$qb->select('t')
 			->from('Template', 't')
-			->where($qb->expr()->orX(
+			->where($qb->expr()->andX(
 				$qb->expr()->eq("t.vendor", "'$vendor'"),
 				$qb->expr()->eq("t.name", "'$name'")
 			));
 		$q = $qb->getQuery();
 		$templateArr = $q->getResult();
-		if ($templateArr > 0){
+		if (count($templateArr) > 0){
 			$template = $templateArr[0];
 			return $template;
 		}
 		else return null;
+	}
+	/**
+	 * Checks if teplate with given name and vendor is already installed.
+	 * @param $vendor 		The vendor of the teplate.	
+	 * @param $name 		Name of the template.	
+	 * @param $em 			Doctrine EntityManager.
+	 * @return			true if this template with given
+	 * 				name and vendor is installed already, 
+	 * 				false otherwise.
+	 */
+	public static function isInstalled($vendor, $name, $em){
+		if (Template::findTemplate($name, $vendor, $em) == null)
+			return false;
+		return true;	
 	}
 }
