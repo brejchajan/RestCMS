@@ -1,8 +1,10 @@
 /**
 	Creates new TextInputComponent
+	@param 	resource	the resource object to persist the data
 */
-var TextInputComponent = function(){
+var TextInputComponent = function(resource){
 	this._inputUIVisible = false;
+	this.resource = resource;
 };
 
 TextInputComponent.prototype = new Component();
@@ -78,10 +80,13 @@ TextInputComponent.prototype.buildDoneButton = function(){
 	this._doneButton = document.createElement("input");
 	this._doneButton.type = "button";
 	this._doneButton.value = _("Done");
-	this._doneButton.addEventListener("click", this.hideInputUI.bind(this), false);
+	this._doneButton.addEventListener("click", this.doneBtnClicked.bind(this), false);
 };
 
-
+TextInputComponent.prototype.doneBtnClicked = function(){
+	this.resource.
+	this.hideInputUI();
+}
 
 TextInputComponent.prototype.hideInputUI = function(){
 	if (this._inputUIVisible){

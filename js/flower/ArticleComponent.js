@@ -7,8 +7,11 @@
 
 /**
 	Constructor for article component
+	@param resource		the resource object to persist the data.
 */
-var ArticleComponent = function(){};
+var ArticleComponent = function(resource){
+	this.resource = resource;
+};
 
 /**
 	Extends component object
@@ -37,7 +40,7 @@ ArticleComponent.prototype.createNewArticle = function(){
 	var articleDiv = document.createElement("div");
 	articleDiv.className = "articleDiv";
 	articleTag.appendChild(articleDiv);
-	var textInput = new TextInputComponent();
+	var textInput = new TextInputComponent(this.resource);
 	textInput.attachToElement(articleDiv);
 	var toolBar = this.buildArticleToolBar(textInput, articleDiv, articleTag);
 	articleTag.insertBefore(toolBar, articleDiv);
