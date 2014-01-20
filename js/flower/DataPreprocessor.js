@@ -27,28 +27,45 @@ DataPreprocessor.prototype.find = function(key, value, filterName, json){
 };
 
 
-var ReservationUrlBuilder = function(){
-    this.flightID = null;
-    this.reservationID = null;
-};
+var TemplateUrlBuilder = function(vendor, name){
+	this.vendor = vendor;
+	this.name = name;
+}
+TemplateUrlBuilder.prototype.post = function(){
+	return "http://localhost/restcms/restcms.php/template";
+}
+TemplateUrlBuilder.prototype.get = function(){
+	return "http://localhost/restcms/restcms.php/template/" + this.vendor + "/" + this.name;
+}
+TemplateUrlBuilder.prototype.put = function(){
+	return "http://localhost/restcms/restcms.php/template/" + this.vendor + "/" + this.name;
+}
 
-ReservationUrlBuilder.prototype.setFlightID = function(flightID){
-    this.flightID = flightID;
-};
 
+var ComponentUrlBuilder = function(template, name){
+	this.template = template;
+	this.name = name;
+}
 
-ReservationUrlBuilder.prototype.setReservationID = function(flightID){
-    this.reservationID = flightID;
-};
+ComponentUrlBuilder.prototype.post = function(){
+	return "http://localhost/restcms/restcms.php/template/" + this.template.vendor + "/" + this.template.name + "/component";
+}
+ComponentUrlBuilder.prototype.get = function(){
+	return "http://localhost/restcms/restcms.php/template/" + this.template.vendor + "/" + this.template.name + "/component" + "/" + this.name;
+}
+ComponentUrlBuilder.prototype.put = function(){
+	return "http://localhost/restcms/restcms.php/template/" + this.template.vendor + "/" + this.template.name + "/component" + "/" + this.name;
+}
 
-ReservationUrlBuilder.prototype.post = function(){
-    return "http://localhost:8080/aos-airport/reservation";
+var ArticleUrlBuilder = function(component){
+    this.component = component;
 };
-
-ReservationUrlBuilder.prototype.get = function(){
-    return "http://localhost:8080/aos-airport/reservation";
-};
-
-ReservationUrlBuilder.prototype.put = function(){
-    return "http://localhost:8080/aos-airport/reservation/";
-};
+ArticleUrlBuilder.prototype.post = function(){
+	return "http://localhost/restcms/restcms.php/template/" + this.component.template.vendor + "/" + this.component.template.name + "/component" + "/" + this.component.name + "/article";
+}
+ArticleUrlBuilder.prototype.get = function(){
+	return "/article";
+}
+ArticleUrlBuilder.prototype.put = function(){
+	return "/article";
+}

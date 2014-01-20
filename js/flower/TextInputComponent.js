@@ -84,7 +84,6 @@ TextInputComponent.prototype.buildDoneButton = function(){
 };
 
 TextInputComponent.prototype.doneBtnClicked = function(){
-	this.resource.
 	this.hideInputUI();
 }
 

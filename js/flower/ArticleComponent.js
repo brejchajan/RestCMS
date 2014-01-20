@@ -9,8 +9,18 @@
 	Constructor for article component
 	@param resource		the resource object to persist the data.
 */
-var ArticleComponent = function(resource){
-	this.resource = resource;
+var ArticleComponent = function(){
+	var successHandler = function(){
+		alert("success");
+	}
+	var errorHandler = function(){
+		alert("error");
+	}
+	this.resource = new Resource(errorHandler, successHandler, "articles", "articles", "sampleurl", ["seq", "text"]);
+	var templateUrlBuilder = new TemplateUrlBuilder("test", "test1");
+	var componentUrlBuilder = new ComponentUrlBuilder(templateUrlBuilder, "component1");
+	var articleUrlBuilder = new ArticleUrlBuilder(componentUrlBuilder);
+	this.resource.setUrlBuilder(articleUrlBuilder);
 };
 
 /**
@@ -35,16 +45,27 @@ ArticleComponent.prototype.buildComponent = function(){
 	Creates new article
 */
 ArticleComponent.prototype.createNewArticle = function(){
-	var articleTag = document.createElement("article");
-	this._parent.appendChild(articleTag);
-	var articleDiv = document.createElement("div");
-	articleDiv.className = "articleDiv";
-	articleTag.appendChild(articleDiv);
-	var textInput = new TextInputComponent(this.resource);
-	textInput.attachToElement(articleDiv);
-	var toolBar = this.buildArticleToolBar(textInput, articleDiv, articleTag);
-	articleTag.insertBefore(toolBar, articleDiv);
-};
+	
+	//persist new article
+	var newArticle = {};
+	newArticle.text = "";
+	newArticle.seq = "AUTO";
+	this.resource.addResource(newArticle,
+	(function(result)
+	{
+		//alert(result);
+		var articleTag = document.createElement("article");
+		this._parent.appendChild(articleTag);
+		var articleDiv = document.createElement("div");
+		articleDiv.className = "articleDiv";
+		articleTag.appendChild(articleDiv);
+		var textInput = new TextInputComponent(this.resource);
+		textInput.attachToElement(articleDiv);
+		var toolBar = this.buildArticleToolBar(textInput, articleDiv, articleTag);
+		articleTag.insertBefore(toolBar, articleDiv);
+	}).bind(this), true);
+	
+	};
 
 /**	
 	Builds article tool bar
