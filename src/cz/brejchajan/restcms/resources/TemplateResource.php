@@ -1,6 +1,6 @@
 <?php
 
-/** Part of the RestCMS priject.
+/** Part of the RestCMS project.
  * @author Jan Brejcha 2014,
  * all rights reserved.
  */
@@ -64,20 +64,26 @@ class TemplateResource
 		 * Install new template
 		 */
 		$this->rest->post('/template', function(Request $request) use($em){ 
-			//TODO check if the template from this vendor with this
-			//name exists and if yes return error.
 			$msg = $request->getContent();
 			$template = json_decode($msg);
 			if (!$template){
 				return new Response("Unable to parse JSON string.", 422);	
 			}
-			$newTemplate = new Template(Helper::getNextId('Template', $em), $template->name, $template->vendor);
+			//check if template exists
+			if (Template::isInstalled($template->vendor, $template->name, $em))
+				return new Response(
+					"Template from this vendor with this name is already installed",
+					422);
+
+			$newTemplate = new Template(Helper::getNextId('Template', $em),
+			       	$template->name, $template->vendor);
 			$newTemplate->setInstalled(new DateTime());
 				
 			$em->persist($newTemplate);
 			$em->flush();	
 			
-			return new Response("/template/".$newTemplate->getVendor()."/".$newTemplate->getName()."", 201);
+			return new Response("/template/".$newTemplate->getVendor()."/".
+				$newTemplate->getName()."", 201);
 		});
 	}
 }
