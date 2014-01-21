@@ -140,7 +140,7 @@ Resource.prototype.getAllResources = function(callback, asynchronous){
 							 }
 							 }).bind(this),
 				success: (function(res){
-						  callback(res);
+						  callback(this.removeLineBreaks(res));
 						  }).bind(this),
 				error: (function(XMLHttpRequest, textStatus, errorThrown) {
 						this.errorHandler("Chyba.\n" + textStatus + " " + errorThrown);
@@ -157,15 +157,13 @@ Resource.prototype.isBound = function(name){
     return false;
 };
 
-Resource.prototype.getResource = function(id, callback, asynchronous){
+Resource.prototype.getResource = function(url, callback, asynchronous){
     if (asynchronous !== false){
         asynchronous = true;
     }
-    if (this.urlBuilder !== null){
-        this.url = this.urlBuilder.get();
-    }
+
     jQuery.ajax({
-				url: this.url + id,
+				url: url,
 				type: "GET",
 				accept: "application/json; charset=utf-8",
 				async: asynchronous,
@@ -195,41 +193,10 @@ Resource.prototype.isBound = function(name){
 };
 
 
-Resource.prototype.updateResource = function(cell, prevCellText, cancelHandler){
-    if (this.urlBuilder !== null){
-        this.url = this.urlBuilder.put();
-    }
-    var row = cell.parentNode;
-    var obj = row.firstChild.nextSibling;
-    var updateData = {};
-    for (var i = 0; i < this.dataHeading.length; i++){
-        var headingItem = this.dataHeading[i];
-        if (this.isBound(headingItem)){
-            //get data from select box
-            var select = obj.firstChild;
-            this.binding[headingItem].getResource(select.value, function(json){
-												  updateData[headingItem] = json;
-												  }, false);
-        }
-        else{
-            updateData[headingItem] = obj.innerHTML;
-        }
-        obj = obj.nextSibling;
-    }
-    if (updateData.dateOfDeparture !== null && updateData.dateOfDeparture !== undefined){
-        updateData.dateOfDeparture = this.dateStringToDate(updateData.dateOfDeparture);
-    }
-    if (this.dataPreprocessor !== null){
-        var updateArrayData = new Array();
-        updateArrayData.push(updateData);
-        updateArrayData = this.dataPreprocessor.processBack(updateArrayData);
-        updateData = updateArrayData[0];
-    }
-	
-    var resourceID = row.firstChild.innerHTML;
-    var jsonString = JSON.stringify(updateData);
+Resource.prototype.updateResource = function(data, url, prevText, cancelHandler){
+    var jsonString = JSON.stringify(data);
     jQuery.ajax({
-				url: this.url + resourceID,
+				url: url,
 				type: "PUT",
 				contentType: "application/json; charset=utf-8",
 				data: jsonString,
@@ -237,7 +204,7 @@ Resource.prototype.updateResource = function(cell, prevCellText, cancelHandler){
 						  this.successHandler();
 						  }).bind(this),
 				error: (function(XMLHttpRequest, textStatus, errorThrown) {
-						cancelHandler(cell, prevCellText);
+						cancelHandler(cell, prevText);
 						this.errorHandler(textStatus + ": " + errorThrown);
 						}).bind(this)
 				});
@@ -263,7 +230,7 @@ Resource.prototype.addResource = function(data, callback, asynchronous){
 				data: jsonRequest,
 				success: (function(res){
 						  if (callback != null)
-							callback(res);
+							callback(this.removeLineBreaks(res));
 						  }).bind(this),
 				error: (function(XMLHttpRequest, textStatus, errorThrown) {
 						this.errorHandler(textStatus + ": " + errorThrown);
@@ -307,3 +274,12 @@ Resource.prototype.dateStringToDate = function(dateString){
     dateString = a.join("");
     return new Date(dateString);
 };
+
+/**
+ Removes linebreaks and leading and trailing whitespaces.
+ */
+Resource.prototype.removeLineBreaks = function(str){
+	var res = str.replace(/(\r\n|\n|\r)/gm,"");
+	res = $.trim(res);
+	return res;
+}

@@ -44,3 +44,24 @@ Component.prototype.attachToElement = function(element){
 	this._parent = element;
 	this.buildComponent();
 };
+
+
+Component.prototype.getMouseXY = function(e) {
+    /*if (IE) { // grab the x-y pos.s if browser is IE
+		tempX = event.clientX + document.body.scrollLeft;
+		tempY = event.clientY + document.body.scrollTop;
+    }
+    else {  // grab the x-y pos.s if browser is NS*/
+		tempX = e.pageX;
+		tempY = e.pageY;
+    //}
+	
+    if (tempX < 0){tempX = 0;}
+    if (tempY < 0){tempY = 0;}
+	
+    var pos = {};
+	pos.x = tempX;
+	pos.y = tempY;
+	
+    return pos;
+}

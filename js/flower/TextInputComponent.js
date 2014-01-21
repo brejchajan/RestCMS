@@ -2,9 +2,11 @@
 	Creates new TextInputComponent
 	@param 	resource	the resource object to persist the data
 */
-var TextInputComponent = function(resource){
+var TextInputComponent = function(resource, resourceUrl, articleData){
 	this._inputUIVisible = false;
-	this.resource = resource;
+	this._resource = resource;
+	this._resourceUrl = resourceUrl;
+	this._articleData = articleData;
 };
 
 TextInputComponent.prototype = new Component();
@@ -18,8 +20,12 @@ TextInputComponent.prototype.buildComponent = function(){
 	this.buildDoneButton();
 
 	this._parent.addEventListener("dblclick", this.showInputUI.bind(this), false);
-
-	this.showInputUI();
+	
+	//if brand new article is created (using button), show UI
+	//else the article is created from database and the UI should not be present.
+	if (this._articleData === null || this._articleData === undefined){
+		this.showInputUI();
+	}
 };
 
 TextInputComponent.prototype.buildBold = function(){
@@ -74,6 +80,11 @@ TextInputComponent.prototype.buildTextarea = function(){
 	this._textarea.addEventListener("keyup", this.updateParent.bind(this), false);
 	this._textarea.addEventListener("click", this.checkToggleButtons.bind(this), false);
 	this._textarea.addEventListener("keyup", this.checkToggleButtons.bind(this), false);
+	//fill textarea if data present
+	if (this._articleData != null && this._articleData != undefined){
+		this._textarea.innerHTML = this._articleData.text;
+		this.updateParent();
+	}
 };
 
 TextInputComponent.prototype.buildDoneButton = function(){
@@ -84,6 +95,12 @@ TextInputComponent.prototype.buildDoneButton = function(){
 };
 
 TextInputComponent.prototype.doneBtnClicked = function(){
+	//update resource
+	var data = {};
+	data.text = this._textarea.innerHTML;
+	data.seq = "AUTO";
+	this._resource.updateResource(data, this._resourceUrl, null, null);
+	//manage UI
 	this.hideInputUI();
 }
 

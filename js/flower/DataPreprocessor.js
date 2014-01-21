@@ -64,7 +64,7 @@ ArticleUrlBuilder.prototype.post = function(){
 	return "http://localhost/restcms/restcms.php/template/" + this.component.template.vendor + "/" + this.component.template.name + "/component" + "/" + this.component.name + "/article";
 }
 ArticleUrlBuilder.prototype.get = function(){
-	return "/article";
+	return "http://localhost/restcms/restcms.php/template/" + this.component.template.vendor + "/" + this.component.template.name + "/component" + "/" + this.component.name + "/article";
 }
 ArticleUrlBuilder.prototype.put = function(){
 	return "/article";
