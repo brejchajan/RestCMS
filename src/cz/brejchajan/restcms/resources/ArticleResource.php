@@ -46,7 +46,8 @@ class ArticleResource
 			$qb = $em->createQueryBuilder();
 			$qb->select('a')
 				->from('Article', 'a')
-				->where("a.component = '".$component->getId()."'");
+				->where("a.component = '".$component->getId()."'")
+				->orderBy('a.seq', 'ASC');
 			$q = $qb->getQuery();
 			$result = $q->getArrayResult();
 			$json = json_encode($result);		
@@ -94,12 +95,36 @@ class ArticleResource
 			$seq = $article->seq;
 			if ($article->seq == "AUTO")
 				$seq = Article::getNextSeq($component, $em);		
+			
 			$newArticle = new Article($seq, $component);
 			$newArticle->setText($article->text);
+			$newArticle->setUrl("");
 			$em->persist($newArticle);
 			$em->flush();	
-			
-			return new Response("/article/".$newArticle->getId()."", 201);
+			$url = "http://".$_SERVER['SERVER_NAME'].$_SERVER['SCRIPT_NAME'].
+				"/article/".$newArticle->getId()."";
+			$newArticle->setUrl($url);
+			$em->persist($newArticle);
+			$em->flush();
+			return new Response($url, 201);
+		});
+		
+		/**
+		 * Update article
+		 */
+		$this->rest->put('/article/{id}', function($id, Request $request) use($em){
+			$article = $em->find('Article', $id);
+			if ($article == NULL)
+				return new Response("This article does not exist.", 400);
+			$msg = $request->getContent();
+			$jsonArticle = json_decode($msg);
+			//update the Article
+			$article->setText($jsonArticle->text);
+			if ($jsonArticle->seq != "AUTO")
+				$article->setSeq($jsonArticle->seq);
+			$em->persist($article);
+			$em->flush();
+			return new Response("", 200);
 		});
 		
 	}

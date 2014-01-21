@@ -75,7 +75,7 @@ class ComponentResource
 			$em->persist($newComponent);
 			$em->flush();	
 			
-			return new Response("/template/$vendor/$name/component/".$newComponent->getName()."", 201);
+			return new Response("http://".$_SERVER['SERVER_NAME'].$_SERVER['SCRIPT_NAME']."/template/$vendor/$name/component/".$newComponent->getName()."", 201);
 		});
 		 
 	}

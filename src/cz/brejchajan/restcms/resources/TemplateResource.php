@@ -82,7 +82,7 @@ class TemplateResource
 			$em->persist($newTemplate);
 			$em->flush();	
 			
-			return new Response("/template/".$newTemplate->getVendor()."/".
+			return new Response("http://".$_SERVER['SERVER_NAME'].$_SERVER['SCRIPT_NAME']."/template/".$newTemplate->getVendor()."/".
 				$newTemplate->getName()."", 201);
 		});
 	}

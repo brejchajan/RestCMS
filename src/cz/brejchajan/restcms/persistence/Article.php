@@ -30,6 +30,11 @@ class Article{
 	 * @ManyToOne(targetEntity="Component", inversedBy="articles") 
 	 */
 	protected $component;
+
+	/**
+	 * @Column(type="string")
+	 */
+	protected $url;
 	
 	/**
 	 * Constructor
@@ -39,6 +44,7 @@ class Article{
 	public function __construct($seq, $component){
 		$this->seq = $seq;
 		$this->component = $component;
+		$this->url = $url;
 	}
 
 	public function getId(){
@@ -67,6 +73,14 @@ class Article{
 
 	public function setComponent($com){
 		$this->component = $com;
+	}
+
+	public function getUrl(){
+		return $this->url;
+	}
+
+	public function setUrl($url){
+		$this->url = $url;
 	}
 
 	/**
