@@ -147,16 +147,6 @@ ArticleComponent.prototype.drag = function(e){
 		this._dragElement.style.left = (pos.x - this._dragElement.offsetWidth / 2.0) + "px";
 		//this._dragElement.style.width = this._dragElement.offsetWidth;
 		this._dragElement.style.top = (pos.y  - this._dragElement.offsetHeight / 2.0) + "px";
-		if (this._dragElementCurrentY != null){
-			if (Math.abs(this._dragElementCurrentY - $(this._dragElement).position().top) > 100){
-				this.animateBack(300);
-				this._dragElementCurrentY = null;
-			}
-		}
-		//sort the items in this component and assign new positions for them in DOM if possible.
-		if (this._timer != null){
-			clearInterval(this._timer);
-		}
 		this.updateComponentDOM();
 	}
 };
@@ -219,10 +209,10 @@ ArticleComponent.prototype.updateComponentDOM = function(){
 				if (animate || current == this._dragElement){
 					animate = true;
 					var next = current.nextSibling;
-					if (next != null){
+					if (next != null && next != this._dragElement){
 						if (heightOffset == 0)
 							heightOffset = current.offsetHeight;
-						$(next).animate({top: "+=" + heightOffset}, {duration:300, queue:false});
+						$(next).animate({top: "+=" + 40}, {duration:300, queue:false});
 						var el = {};
 						el.height = heightOffset;
 						el.element = next;
@@ -238,13 +228,12 @@ ArticleComponent.prototype.animateBack = function(time, callback){
 	//animate back
 	var i = 0;
 	var run = false;
-	while (this._movedElements.length - 1 > 0){
-		run = true;
-		var el = this._movedElements.shift();
-		//el.element.style.top = 0;
-		$(el.element).animate({top: "0px"}, {duration:time, queue:false});
-	}
-	if (run){
+	if (this._movedElements.length > 0){
+		while (this._movedElements.length - 1 > 0){
+			var el = this._movedElements.shift();
+			//el.element.style.top = 0;
+			$(el.element).animate({top: "0px"}, {duration:time, queue:false});
+		}
 		var el = this._movedElements.shift();
 		$(el.element).animate({top: "0px"}, {duration:time, queue:false, complete:callback});
 	}
