@@ -27,6 +27,7 @@ var ArticleComponent = function(){
 ArticleComponent.prototype = Object.create(Component.prototype);
 
 ArticleComponent.prototype.loadArticlesCallback = function(data){
+	this._articles = [];
 	//alert(data);
 	var articles = JSON.parse(data);
 	for (var key in articles){
@@ -40,7 +41,7 @@ ArticleComponent.prototype.loadArticlesCallback = function(data){
  */
 ArticleComponent.prototype.createArticleResource = function(){
 	var successHandler = function(){
-		alert("success");
+		//alert("success");
 	}
 	var errorHandler = function(){
 		alert("error");
@@ -114,6 +115,7 @@ ArticleComponent.prototype.createTextInputComponent = function(resourceUrl, arti
 	articleTag.appendChild(articleDiv);
 	var textInput = new TextInputComponent(articleResource, resourceUrl, articleData);
 	textInput.attachToElement(articleDiv);
+	this._articles.push({article:textInput, tag:articleTag});
 	var toolBar = this.buildArticleToolBar(textInput, articleDiv, articleTag);
 	articleTag.insertBefore(toolBar, articleDiv);
 };
@@ -124,6 +126,14 @@ ArticleComponent.prototype.setDraggable = function(article){
 };
 
 ArticleComponent.prototype.registerDrag = function(tag){
+	//find first textinput component
+	//find article text input component
+	for (var key in this._articles){
+		var art = this._articles[key];
+		if (art.tag == this._firstArticle){
+			this._firstSeq = art.article.getSeq();
+		}
+	}
 	this._dragElement = tag
 };
 
@@ -136,7 +146,27 @@ ArticleComponent.prototype.unregisterDrag = function(tag){
 	this.updateComponentDOM();
 	this.animateBack(0);
 	this._dragElement = null;
+	
+	this.updateSeq();
 };
+
+ArticleComponent.prototype.updateSeq = function(){
+	var article = this._firstArticle;
+	var seq = this._firstSeq;
+	while(article != null){
+		//find article text input component
+		for (var key in this._articles){
+			var art = this._articles[key];
+			if (art.tag == article){
+				//found, update
+				art.article.updateResource(seq);
+				seq--;
+			}
+		}
+		//update article
+		article = article.nextSibling;
+	}
+}
 
 ArticleComponent.prototype.drag = function(e){
 	document.getSelection().removeAllRanges();

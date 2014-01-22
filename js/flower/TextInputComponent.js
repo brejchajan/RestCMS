@@ -102,17 +102,22 @@ TextInputComponent.prototype.doneBtnClicked = function(){
 
 TextInputComponent.prototype.updateResource = function(seq){
 	//update resource
-	var data = {};
-	data.text = this._textarea.innerHTML;
-	if (seq == null || seq == undefined){
-		data.seq = "AUTO";
+	var prevSeq = this.getSeq();
+	if (prevSeq != seq){
+		//need to update seq
+		var data = {};
+		data.text = this._textarea.innerHTML;
+		if (seq == null || seq == undefined){
+			data.seq = "AUTO";
+		}
+		else data.seq = seq;
+		this._articleData.seq = data.seq;
+		this._resource.updateResource(data, this._resourceUrl, null, null);
 	}
-	else data.seq = seq;
-	this._resource.updateResource(data, this._resourceUrl, null, null);
 }
 
 TextInputComponent.prototype.getSeq = function(){
-	if (this._articleData.seq == null){
+	if (this._articleData == null){
 		//need to download
 		this._resource.getResource(this._resourceUrl, (function(res){
 			this._articleData = JSON.parse(res);
