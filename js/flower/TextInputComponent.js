@@ -95,19 +95,19 @@ TextInputComponent.prototype.buildDoneButton = function(){
 };
 
 TextInputComponent.prototype.doneBtnClicked = function(){
-	this.updateResource();
+	this.updateResource(null, true);
 	//manage UI
 	this.hideInputUI();
 }
 
-TextInputComponent.prototype.updateResource = function(seq){
+TextInputComponent.prototype.updateResource = function(seq, dirty){
 	//update resource
 	var prevSeq = this.getSeq();
-	if (prevSeq != seq){
-		//need to update seq
+	if (prevSeq != seq || dirty){
+		//need to update
 		var data = {};
 		data.text = this._textarea.innerHTML;
-		if (seq == null || seq == undefined){
+		if (seq == null || seq == undefined || seq == -1){
 			data.seq = "AUTO";
 		}
 		else data.seq = seq;
@@ -120,7 +120,12 @@ TextInputComponent.prototype.getSeq = function(){
 	if (this._articleData == null){
 		//need to download
 		this._resource.getResource(this._resourceUrl, (function(res){
-			this._articleData = JSON.parse(res);
+			this._articleData = (JSON.parse(res))[0];
+		}).bind(this), false);
+	}
+	else if (this._articleData.seq == "AUTO"){
+		this._resource.getResource(this._resourceUrl, (function(res){
+			this._articleData = (JSON.parse(res))[0];
 		}).bind(this), false);
 	}
 	return this._articleData.seq;
