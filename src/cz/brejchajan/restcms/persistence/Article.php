@@ -103,7 +103,7 @@ class Article{
 			$id = $lastArticle->getSeq();
 			return $id + 1;
 		}
-		return 0;
+		return 1;
 	}
 }
 
