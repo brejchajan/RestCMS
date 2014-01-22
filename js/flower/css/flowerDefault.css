@@ -3,11 +3,28 @@
 	it is responsible for styling all JS components in Flower
 */
 
+#main {
+	position:static;
+	left: 310px;
+	top:0px;
+	width: 500px;
+}
+
+.leftSidebar {
+	width: 300px;
+	background-color: rgba(255, 255, 0, 0.1);
+	border-radius: 20px;
+}
+
 .articleDiv {
 	min-width: 400px;
 	min-height: 50px;
 	border-radius: 20px;
-	background-color: green;
+	/*background-color: green;
+	background-color: rgba(0, 255, 0, 0.1);*/
+}
+
+.articles .articleDiv {
 	background-color: rgba(0, 255, 0, 0.1);
 }
 

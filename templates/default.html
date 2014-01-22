@@ -8,10 +8,13 @@
 		
 		<script type="text/javascript">
 			var run = function(){				
-				var article = new ArticleComponent();
+				var article = new ArticleComponent("articles");
 				article.attachToClass("articles");
+				
+				var leftSidebar = new ArticleComponent("leftSidebar");
+				leftSidebar.attachToClass("leftSidebar");
 			}
-			var engine = new Flower(run, "cz");
+			var engine = new Flower(run, "brejchajan", "default", "cz");
 		</script>
 	</head>
 	<body>
@@ -24,8 +27,12 @@
 				<li><a href="./main" title="Domů">Domů</a></li>
 			</ul>
 		</nav>
-		<section title="article section" class="articles">
-			<h1>Články</h1>
+		<section title="left sidebar" class="leftSidebar">
 		</section>
+		<div id="main">
+			<section title="article section" class="articles">
+				<h1>Články</h1>
+			</section>
+		</div>
 	</body>
 </html>
