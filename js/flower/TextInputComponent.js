@@ -95,13 +95,30 @@ TextInputComponent.prototype.buildDoneButton = function(){
 };
 
 TextInputComponent.prototype.doneBtnClicked = function(){
+	this.updateResource();
+	//manage UI
+	this.hideInputUI();
+}
+
+TextInputComponent.prototype.updateResource = function(seq){
 	//update resource
 	var data = {};
 	data.text = this._textarea.innerHTML;
-	data.seq = "AUTO";
+	if (seq == null || seq == undefined){
+		data.seq = "AUTO";
+	}
+	else data.seq = seq;
 	this._resource.updateResource(data, this._resourceUrl, null, null);
-	//manage UI
-	this.hideInputUI();
+}
+
+TextInputComponent.prototype.getSeq = function(){
+	if (this._articleData.seq == null){
+		//need to download
+		this._resource.getResource(this._resourceUrl, (function(res){
+			this._articleData = JSON.parse(res);
+		}).bind(this), false);
+	}
+	return this._articleData.seq;
 }
 
 TextInputComponent.prototype.hideInputUI = function(){
