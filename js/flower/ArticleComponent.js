@@ -101,7 +101,6 @@ ArticleComponent.prototype.createTextInputComponent = function(resourceUrl, arti
 	//make article tag draggable
 	this.setDraggable(articleTag);
 	
-	
 	if (this._articleCount == 0){
 		this._parent.appendChild(articleTag);
 		this._firstArticle = articleTag;
@@ -112,11 +111,13 @@ ArticleComponent.prototype.createTextInputComponent = function(resourceUrl, arti
 	}
 	var articleDiv = document.createElement("div");
 	articleDiv.className = "articleDiv";
+	this.makeUnselectable(articleDiv);
 	articleTag.appendChild(articleDiv);
 	var textInput = new TextInputComponent(articleResource, resourceUrl, articleData);
 	textInput.attachToElement(articleDiv);
 	this._articles.push({article:textInput, tag:articleTag});
 	var toolBar = this.buildArticleToolBar(textInput, articleDiv, articleTag);
+	this.makeUnselectable(toolBar);
 	articleTag.insertBefore(toolBar, articleDiv);
 };
 
@@ -169,8 +170,9 @@ ArticleComponent.prototype.updateSeq = function(){
 }
 
 ArticleComponent.prototype.drag = function(e){
-	document.getSelection().removeAllRanges();
-	if (this._dragElement != null){
+	//if (e.target.className == "articleDiv")
+		//document.getSelection().removeAllRanges();
+	if (this._dragElement != null && e.target.className == "articleDiv"){
 		this._dragElement.style.position = "absolute";
 		var pos = this.getMouseXY(e);
 		this._dragElement.style.left = (pos.x - this._dragElement.offsetWidth / 2.0) + "px";
