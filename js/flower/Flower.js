@@ -8,7 +8,9 @@
 	Registers onLoad event listener to start the Flower system
 	@param callback - user callback function that initializes components on the page
 */
-var Flower = function(callback, defaultLanguage){
+var Flower = function(callback, templateVendor, templateName, defaultLanguage){
+	window.templateName = templateName;
+	window.templateVendor = templateVendor;
 	addEventListener("load", callback, false);
 	Flower.initLanguages();
 	Flower.setDefaultLanguage(defaultLanguage);

@@ -9,7 +9,8 @@
 	Constructor for article component
 	@param resource		the resource object to persist the data.
 */
-var ArticleComponent = function(){
+var ArticleComponent = function(componentName){
+	this._componentName = componentName;
 	this.resource = this.createArticleResource();
 	this._dragElement = null;
 	this._movedElements = [];
@@ -46,9 +47,9 @@ ArticleComponent.prototype.createArticleResource = function(){
 	var errorHandler = function(){
 		alert("error");
 	}
-	var resource = new Resource(errorHandler, successHandler, "articles", "articles", "sampleurl", ["seq", "text"]);
-	var templateUrlBuilder = new TemplateUrlBuilder("test", "test1");
-	var componentUrlBuilder = new ComponentUrlBuilder(templateUrlBuilder, "component1");
+	var resource = new Resource(errorHandler, successHandler, this._componentName, this._componentName, "sampleurl", ["seq", "text"]);
+	var templateUrlBuilder = new TemplateUrlBuilder(window.templateVendor, window.templateName);
+	var componentUrlBuilder = new ComponentUrlBuilder(templateUrlBuilder, this._componentName);
 	var articleUrlBuilder = new ArticleUrlBuilder(componentUrlBuilder);
 	resource.setUrlBuilder(articleUrlBuilder);
 	return resource;
