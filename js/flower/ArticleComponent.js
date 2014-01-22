@@ -12,7 +12,6 @@
 var ArticleComponent = function(){
 	this.resource = this.createArticleResource();
 	this._dragElement = null;
-	this._dragElementCurrentY = null;
 	this._movedElements = [];
 	this._articleCount = 0;
 	this._firstArticle = null;
@@ -177,7 +176,6 @@ ArticleComponent.prototype.updateComponentDOM = function(){
 		}
 	}
 	if (changed == true){
-		this._dragElementCurrentY = $(this._dragElement).position().top;
 		map.reverse();
 		//update component DOM
 		//remove all articles from DOM
@@ -202,7 +200,6 @@ ArticleComponent.prototype.updateComponentDOM = function(){
 		this.animateBack(300, (function(){
 			map.reverse();
 			var animate = false;
-			var heightOffset = 0;
 			for (key in map){
 				var current = map[key];
 				//animate forward
@@ -210,13 +207,8 @@ ArticleComponent.prototype.updateComponentDOM = function(){
 					animate = true;
 					var next = current.nextSibling;
 					if (next != null && next != this._dragElement){
-						if (heightOffset == 0)
-							heightOffset = current.offsetHeight;
 						$(next).animate({top: "+=" + 40}, {duration:300, queue:false});
-						var el = {};
-						el.height = heightOffset;
-						el.element = next;
-						this._movedElements.push(el);
+						this._movedElements.push(next);
 					}
 				}
 			}
@@ -231,11 +223,10 @@ ArticleComponent.prototype.animateBack = function(time, callback){
 	if (this._movedElements.length > 0){
 		while (this._movedElements.length - 1 > 0){
 			var el = this._movedElements.shift();
-			//el.element.style.top = 0;
-			$(el.element).animate({top: "0px"}, {duration:time, queue:false});
+			$(el).animate({top: "0px"}, {duration:time, queue:false});
 		}
 		var el = this._movedElements.shift();
-		$(el.element).animate({top: "0px"}, {duration:time, queue:false, complete:callback});
+		$(el).animate({top: "0px"}, {duration:time, queue:false, complete:callback});
 	}
 	else{
 		if (callback != null && callback != undefined)
