@@ -4,16 +4,19 @@
 */
 
 #main {
-	position:static;
+	position:absolute;
 	left: 310px;
-	top:0px;
-	width: 500px;
+	top:40px;
+	width: 700px;
 }
 
 .leftSidebar {
 	width: 300px;
 	background-color: rgba(255, 255, 0, 0.1);
 	border-radius: 20px;
+	position:relative;
+	right: 0px;
+	float: right;
 }
 
 .articleDiv {
