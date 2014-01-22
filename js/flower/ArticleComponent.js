@@ -12,6 +12,8 @@
 var ArticleComponent = function(){
 	this.resource = this.createArticleResource();
 	this._dragElement = null;
+	this._dragElementCurrentY = null;
+	this._movedElements = [];
 	this._articleCount = 0;
 	this._firstArticle = null;
 	
@@ -95,6 +97,7 @@ ArticleComponent.prototype.createTextInputComponent = function(resourceUrl, arti
 	var articleResource = this.createArticleResource();
 	
 	var articleTag = document.createElement("article");
+	articleTag.style.position = "relative";
 	//make article tag draggable
 	this.setDraggable(articleTag);
 	
@@ -128,10 +131,11 @@ ArticleComponent.prototype.registerDrag = function(tag){
 
 ArticleComponent.prototype.unregisterDrag = function(tag){
 	//finish editting DOM
-	this._dragElement.style.position = "";
-	this._dragElement.top = "";
-	this._dragElement.left = "";
+	this._dragElement.style.position = "relative";
+	this._dragElement.style.top = "0px";
+	this._dragElement.style.left = "0px";
 	this.updateComponentDOM();
+	this.animateBack(0);
 	this._dragElement = null;
 };
 
@@ -143,8 +147,16 @@ ArticleComponent.prototype.drag = function(e){
 		this._dragElement.style.left = (pos.x - this._dragElement.offsetWidth / 2.0) + "px";
 		//this._dragElement.style.width = this._dragElement.offsetWidth;
 		this._dragElement.style.top = (pos.y  - this._dragElement.offsetHeight / 2.0) + "px";
-		
+		if (this._dragElementCurrentY != null){
+			if (Math.abs(this._dragElementCurrentY - $(this._dragElement).position().top) > 100){
+				this.animateBack(300);
+				this._dragElementCurrentY = null;
+			}
+		}
 		//sort the items in this component and assign new positions for them in DOM if possible.
+		if (this._timer != null){
+			clearInterval(this._timer);
+		}
 		this.updateComponentDOM();
 	}
 };
@@ -175,6 +187,7 @@ ArticleComponent.prototype.updateComponentDOM = function(){
 		}
 	}
 	if (changed == true){
+		this._dragElementCurrentY = $(this._dragElement).position().top;
 		map.reverse();
 		//update component DOM
 		//remove all articles from DOM
@@ -185,15 +198,59 @@ ArticleComponent.prototype.updateComponentDOM = function(){
 		this._articleCount = 0;
 		//reinsert all articles back to DOM
 		for (key in map){
+			var current = map[key];
 			if (this._articleCount == 0){
-				this._parent.appendChild(map[key]);
+				this._parent.appendChild(current);
 			}
 			else{
-				this._parent.insertBefore(map[key], this._firstArticle);
+				this._parent.insertBefore(current, this._firstArticle);
 			}
 			this._firstArticle = map[key];
 			this._articleCount++;
 		}
+		//make animations
+		this.animateBack(300, (function(){
+			map.reverse();
+			var animate = false;
+			var heightOffset = 0;
+			for (key in map){
+				var current = map[key];
+				//animate forward
+				if (animate || current == this._dragElement){
+					animate = true;
+					var next = current.nextSibling;
+					if (next != null){
+						if (heightOffset == 0)
+							heightOffset = current.offsetHeight;
+						$(next).animate({top: "+=" + heightOffset}, {duration:300, queue:false});
+						var el = {};
+						el.height = heightOffset;
+						el.element = next;
+						this._movedElements.push(el);
+					}
+				}
+			}
+		}).bind(this));
+	}
+}
+
+ArticleComponent.prototype.animateBack = function(time, callback){
+	//animate back
+	var i = 0;
+	var run = false;
+	while (this._movedElements.length - 1 > 0){
+		run = true;
+		var el = this._movedElements.shift();
+		//el.element.style.top = 0;
+		$(el.element).animate({top: "0px"}, {duration:time, queue:false});
+	}
+	if (run){
+		var el = this._movedElements.shift();
+		$(el.element).animate({top: "0px"}, {duration:time, queue:false, complete:callback});
+	}
+	else{
+		if (callback != null && callback != undefined)
+			callback();
 	}
 }
 
