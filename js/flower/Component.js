@@ -63,8 +63,9 @@ Component.prototype.getMouseXY = function(e) {
 		tempY = event.clientY + document.body.scrollTop;
     }
     else {  // grab the x-y pos.s if browser is NS*/
-		tempX = e.pageX;
-		tempY = e.pageY;
+	var parentOffset = $(this._parent).offset();
+		tempX = e.pageX - parentOffset.left;
+		tempY = e.pageY - parentOffset.top;
     //}
 	
     if (tempX < 0){tempX = 0;}
