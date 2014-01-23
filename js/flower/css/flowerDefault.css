@@ -3,7 +3,7 @@
 	it is responsible for styling all JS components in Flower
 */
 
-#main {
+.content {
 	position:relative;
 }
 

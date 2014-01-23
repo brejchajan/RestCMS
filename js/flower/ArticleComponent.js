@@ -16,10 +16,7 @@ var ArticleComponent = function(componentName){
 	this._movedElements = [];
 	this._articleCount = 0;
 	this._firstArticle = null;
-	
-	//load articles from resource
-	this.resource.getAllResources(this.loadArticlesCallback.bind(this), true);
-	
+	this._dragElementContent = null;
 };
 
 /**
@@ -61,6 +58,7 @@ ArticleComponent.prototype.createArticleResource = function(){
 	Builds this component.
 */
 ArticleComponent.prototype.buildComponent = function(){
+	this.removeAllArticles();
 	//support for dragging children
 	this._parent.addEventListener("mousemove", this.drag.bind(this), false);
 	
@@ -69,6 +67,20 @@ ArticleComponent.prototype.buildComponent = function(){
 	this._addArticleButton.value = _("Add article");
 	this._addArticleButton.addEventListener("click", this.createNewArticle.bind(this), false);
 	this._parent.appendChild(this._addArticleButton);
+	
+	
+	//load articles from resource
+	this.resource.getAllResources(this.loadArticlesCallback.bind(this), true);
+};
+
+ArticleComponent.prototype.removeAllArticles = function(){
+	var article = this._firstArticle;
+	var nextArticle;
+	while (article != null){
+		nextArticle = article.nextSibling;
+		this._parent.removeChild(article);
+		article = nextArticle;
+	}
 };
 
 /**
@@ -137,6 +149,11 @@ ArticleComponent.prototype.registerDrag = function(tag){
 		}
 	}
 	this._dragElement = tag
+	
+	//change the drag element content to the advice what to do when dragging
+	var articleDiv = tag.firstChild.nextSibling;
+	this._dragElementContent = articleDiv.innerHTML;
+	articleDiv.innerHTML = _("Drag this article to a new position between articles.");
 };
 
 
@@ -147,6 +164,12 @@ ArticleComponent.prototype.unregisterDrag = function(tag){
 	this._dragElement.style.left = "0px";
 	this.updateComponentDOM();
 	this.animateBack(0);
+	
+	//return the former content of the article
+	var articleDiv = this._dragElement.firstChild.nextSibling;
+	articleDiv.innerHTML = this._dragElementContent;
+	this._dragElementContent = null;
+	
 	this._dragElement = null;
 	
 	this.updateSeq();

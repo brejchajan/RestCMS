@@ -19,6 +19,15 @@
 				
 				var jumbotron = new ArticleComponent("jumbotron");
 				jumbotron.attachToClass("jumbotron");
+				
+				var main = new MainComponent();
+				main.attachToClass("main");
+				main.addPage("home");
+				main.addPage("about");
+				main.addPage("contact");
+				main.registerPageComponent(article);
+				main.registerPageComponent(jumbotron);
+				main.setCurrentPage("home");
 			}
 			var engine = new Flower(run, "brejchajan", "default", "cz");
 		</script>
@@ -46,23 +55,56 @@
 			  </div><!-- /.container -->
 			</div><!-- /.navbar -->
 		</nav>
-	<div class="container">
-		  <div class="row row-offcanvas row-offcanvas-right">
-			<div class="col-xs-12 col-sm-9">
-				<p class="pull-right visible-xs">
-					<button type="button" class="btn btn-primary btn-xs" data-toggle="offcanvas">Toggle nav</button>
-				</p>
-				<div class="jumbotron">
-				</div>
+	<div id="main">
+		<div id="home">
+			<div class="container">
+				  <div class="row row-offcanvas row-offcanvas-right">
+					<div class="col-xs-12 col-sm-9">
+						<p class="pull-right visible-xs">
+							<button type="button" class="btn btn-primary btn-xs" data-toggle="offcanvas">Toggle nav</button>
+						</p>
+						<div class="jumbotron">
+						</div>
 				
-				<div id="main">
-					<section title="article section" class="articles">
-					</section>
+						<div class="content">
+							<section title="article section" class="articles">
+							</section>
+						</div>
+					</div>
 				</div>
 			</div>
 		</div>
-	</div>
-	
+		<div id="about">
+			<div class="container">
+				  <div class="row row-offcanvas row-offcanvas-right">
+					<div class="col-xs-12 col-sm-9">
+						<div class="content">
+							<section title="article section" class="articles">
+							</section>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div id="contact">
+			<div class="container">
+				  <div class="row row-offcanvas row-offcanvas-right">
+					<div class="col-xs-12 col-sm-9">
+						<p class="pull-right visible-xs">
+							<button type="button" class="btn btn-primary btn-xs" data-toggle="offcanvas">Toggle nav</button>
+						</p>
+						<div class="jumbotron">
+						</div>
+				
+						<div class="content">
+							<section title="article section" class="articles">
+							</section>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>	
 	<section title="left sidebar" class="leftSidebar">
 	</section>
 	</body>

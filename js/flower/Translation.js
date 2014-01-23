@@ -13,4 +13,5 @@ var Translation = function(){
 	Flower.addTranslation(["heading 4", "nadpis 4"]);
 	Flower.addTranslation(["heading 5", "nadpis 5"]);
 	Flower.addTranslation(["heading 6", "nadpis 6"]);
+	Flower.addTranslation(["Drag this article to a new position between articles.", "Táhněte článek na novou pozici mezi ostatními články."]);
 };

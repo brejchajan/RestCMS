@@ -36,6 +36,13 @@ Component.prototype.attachToClass = function(className){
 	this.buildComponent();
 };
 
+Component.prototype.reattachToClass = function(){
+	this._parent = document.querySelector("." + this._parent.className);
+	this.buildComponent();
+};
+
+
+
 /**
 	Attaches this component to the DOM element.
 	@param element - javascript DOM element
