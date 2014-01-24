@@ -17,6 +17,8 @@ var ArticleComponent = function(componentName){
 	this._articleCount = 0;
 	this._firstArticle = null;
 	this._dragElementContent = null;
+	this._addArticleButton = null;
+	this._longPressTimer = null;
 };
 
 /**
@@ -74,13 +76,20 @@ ArticleComponent.prototype.buildComponent = function(){
 };
 
 ArticleComponent.prototype.removeAllArticles = function(){
+	if (this._addArticleButton != null){
+		this._parent.removeChild(this._addArticleButton);
+		this._addArticleButton = null;
+	}
 	var article = this._firstArticle;
 	var nextArticle;
 	while (article != null){
 		nextArticle = article.nextSibling;
-		this._parent.removeChild(article);
+		if (this._parent.children.length > 0){
+			this._parent.removeChild(article);
+		}
 		article = nextArticle;
 	}
+	this._articleCount = 0;
 };
 
 /**
@@ -150,14 +159,22 @@ ArticleComponent.prototype.registerDrag = function(tag){
 	}
 	this._dragElement = tag
 	
-	//change the drag element content to the advice what to do when dragging
 	var articleDiv = tag.firstChild.nextSibling;
-	this._dragElementContent = articleDiv.innerHTML;
-	articleDiv.innerHTML = _("Drag this article to a new position between articles.");
+	var text = _("Drag this article to a new position between articles.");
+	if (articleDiv.innerHTML != text){
+		this._dragElementContent = articleDiv.innerHTML;
+		this._longPressTimer = setTimeout((function(){
+			//change the drag element content to the advice what to do when dragging
+			articleDiv.innerHTML = text;
+		}).bind(this), 200);
+	}
 };
 
 
 ArticleComponent.prototype.unregisterDrag = function(tag){
+	//eventually stop long press timeout
+	clearTimeout(this._longPressTimer);
+	this._longPressTimer = null;
 	//finish editting DOM
 	this._dragElement.style.position = "relative";
 	this._dragElement.style.top = "0px";
