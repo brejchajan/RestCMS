@@ -14,12 +14,32 @@ var MainComponent = function(){
 	this._pages = [];
 	this._currentPageId = null;
 	this._pageComponents = [];
+	
+	
+	//init functions
+	this.registerHashEventListeners();
 };
 
 /**
  Extends component object
  */
 MainComponent.prototype = Object.create(Component.prototype);
+
+
+MainComponent.prototype.registerHashEventListeners = function(){
+	var links = document.querySelectorAll("a[href^='#']");
+	for (var i = 0; i < links.length; i++){
+		var link = links[i];
+		link.addEventListener('click', this.hashLinkClicked.bind(this), true);
+	}
+}
+
+MainComponent.prototype.hashLinkClicked = function(e){
+	e.preventDefault();
+	window.location = e.target.href;
+	var pageId = (window.location.hash.split("#"))[1];
+	this.setCurrentPage(pageId);
+}
 
 /**
  Adds page to the main component
@@ -60,7 +80,9 @@ MainComponent.prototype.buildComponent = function(){
 		}
 		else{
 			//remove the page from DOM
-			parent.removeChild(page);
+			if ($(parent).children("#" + page.id).length > 0){
+				parent.removeChild(page);
+			}
 		}
 	}
 	//reattach components
