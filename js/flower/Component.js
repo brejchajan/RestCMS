@@ -24,7 +24,7 @@ Component.prototype.buildComponent = function(){
 */
 Component.prototype.attachToTag = function(tagName){
 	this._parent = document.querySelector(tagName);
-	this.buildComponent();
+	//this.buildComponent();
 };
 
 /** 
@@ -33,12 +33,15 @@ Component.prototype.attachToTag = function(tagName){
 */
 Component.prototype.attachToClass = function(className){
 	this._parent = document.querySelector("." + className);
-	this.buildComponent();
+	//this.buildComponent();
 };
 
 Component.prototype.reattachToClass = function(){
-	this._parent = document.querySelector("." + this._parent.className);
-	this.buildComponent();
+	var tempParent = document.querySelector("." + this._parent.className);
+	if (tempParent != null){
+		this._parent = tempParent;
+		this.buildComponent();
+	}
 };
 
 
