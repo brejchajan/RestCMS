@@ -35,10 +35,12 @@ MainComponent.prototype.registerHashEventListeners = function(){
 }
 
 MainComponent.prototype.hashLinkClicked = function(e){
-	e.preventDefault();
-	window.location = e.target.href;
-	var pageId = (window.location.hash.split("#"))[1];
-	this.setCurrentPage(pageId);
+	var pageId = e.target.getAttribute('data-use-template');
+	if (pageId != null){
+		e.preventDefault();
+		window.location = e.target.href;
+		this.setCurrentPage(pageId);
+	}
 }
 
 /**
