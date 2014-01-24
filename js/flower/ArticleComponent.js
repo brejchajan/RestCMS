@@ -11,7 +11,8 @@
 */
 var ArticleComponent = function(componentName){
 	this._componentName = componentName;
-	this.resource = this.createArticleResource();
+	//component name prefix to be able to have separate components on different pages created dynamically.
+	this.componentNamePrefix = "";
 	this._dragElement = null;
 	this._movedElements = [];
 	this._articleCount = 0;
@@ -46,9 +47,9 @@ ArticleComponent.prototype.createArticleResource = function(){
 	var errorHandler = function(){
 		alert("error");
 	}
-	var resource = new Resource(errorHandler, successHandler, this._componentName, this._componentName, "sampleurl", ["seq", "text"]);
+	var resource = new Resource(errorHandler, successHandler, this.componentNamePrefix + this._componentName, this.componentNamePrefix + this._componentName, "sampleurl", ["seq", "text"]);
 	var templateUrlBuilder = new TemplateUrlBuilder(window.templateVendor, window.templateName);
-	var componentUrlBuilder = new ComponentUrlBuilder(templateUrlBuilder, this._componentName);
+	var componentUrlBuilder = new ComponentUrlBuilder(templateUrlBuilder, this.componentNamePrefix + this._componentName);
 	var articleUrlBuilder = new ArticleUrlBuilder(componentUrlBuilder);
 	resource.setUrlBuilder(articleUrlBuilder);
 	return resource;
@@ -70,7 +71,8 @@ ArticleComponent.prototype.buildComponent = function(){
 	this._addArticleButton.addEventListener("click", this.createNewArticle.bind(this), false);
 	this._parent.appendChild(this._addArticleButton);
 	
-	
+	//create new resource
+	this.resource = this.createArticleResource();
 	//load articles from resource
 	this.resource.getAllResources(this.loadArticlesCallback.bind(this), true);
 };

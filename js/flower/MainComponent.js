@@ -88,8 +88,11 @@ MainComponent.prototype.buildComponent = function(){
 		}
 	}
 	//reattach components
+	var prefix = window.location.hash;
 	for (var key in this._pageComponents){
 		var component = this._pageComponents[key];
+		//TODO uncomment this line and implement automatic installation to component.
+		//component.componentNamePrefix = prefix;
 		component.reattachToClass();
 	}
 	
