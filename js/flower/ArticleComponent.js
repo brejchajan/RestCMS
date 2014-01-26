@@ -128,8 +128,11 @@ ArticleComponent.prototype.createNewArticle = function(articleData){
 ArticleComponent.prototype.createTextInputComponent = function(resourceUrl, articleData){
 	//create new resource for particular article
 	var articleResource = this.createArticleResource();
-	
+	var childrenClassName = this._parent.getAttribute("data-children-class");
 	var articleTag = document.createElement("article");
+	if (childrenClassName != null && childrenClassName != undefined){
+		articleTag.className = childrenClassName;
+	}
 	articleTag.style.position = "relative";
 	//make article tag draggable
 	this.setDraggable(articleTag);
