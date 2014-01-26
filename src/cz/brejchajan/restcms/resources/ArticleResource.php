@@ -41,7 +41,7 @@ class ArticleResource
 			$component = Component::find($template, $cname, $em);
 			if ($component == NULL){
 				return new Response("Component named " . $cname . 
-					" is not installed in this template;", 422);
+					" is not installed in this template;", 424);
 			}
 			$qb = $em->createQueryBuilder();
 			$qb->select('a')
@@ -88,7 +88,7 @@ class ArticleResource
 			$component = Component::find($template, $cname, $em);
 			if ($component == NULL){
 				return new Response("Component named " . $cname . 
-					" is not installed in this template;", 422);
+					" is not installed in this template;", 423);
 			}
 			$msg = $request->getContent();
 			$article = json_decode($msg);
