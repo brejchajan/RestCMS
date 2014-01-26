@@ -53,6 +53,12 @@ MainComponent.prototype.addPage = function(pageId){
 	//alert(this._pages[pageId]);
 };
 
+MainComponent.prototype.setIndexPage = function(templatePageId, pageHref){
+	window.location.href = (window.location.href.split("#"))[0] + "#" + pageHref;
+	this._currentPageId = templatePageId;
+	this.buildComponent();
+}
+
 MainComponent.prototype.setCurrentPage = function(pageId){
 	this._currentPageId = pageId;
 	this.buildComponent();
@@ -66,6 +72,14 @@ MainComponent.prototype.registerPageComponent = function(component){
 }
 
 MainComponent.prototype.buildComponent = function(){
+	var prefix = (window.location.hash.split("#"))[1];
+	if (prefix == null || prefix == undefined){
+		window.location.href = window.location.href + "#" + this._currentPageId;
+	}
+	/*if (prefix != this._currentPageId){
+		this.setCurrentPage(prefix);
+		return;
+	}*/
 	//remove contents the components
 	for (var key in this._pageComponents){
 		var component = this._pageComponents[key];
@@ -88,11 +102,10 @@ MainComponent.prototype.buildComponent = function(){
 		}
 	}
 	//reattach components
-	var prefix = window.location.hash;
 	for (var key in this._pageComponents){
 		var component = this._pageComponents[key];
 		//TODO uncomment this line and implement automatic installation to component.
-		//component.componentNamePrefix = prefix;
+		component.componentNamePrefix = prefix;
 		component.reattachToClass();
 	}
 	
