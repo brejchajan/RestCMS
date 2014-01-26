@@ -44,14 +44,23 @@ ArticleComponent.prototype.createArticleResource = function(){
 	var successHandler = function(){
 		//alert("success");
 	}
-	var errorHandler = function(){
-		alert("error");
+	var errorHandler = function(e){
+		if (e.status == 424){
+			//if the component was not found
+			//install the component
+			var component = {name: this.componentNamePrefix + this._componentName};
+			this.resource.setUrlBuilder(this._componentUrlBuilder);
+			this.resource.addResource(component, (function(){
+				this.resource.setUrlBuilder(this._articleUrlBuilder);
+				this.resource.getAllResources(this.loadArticlesCallback.bind(this), true);
+			}).bind(this), true);
+		}
 	}
-	var resource = new Resource(errorHandler, successHandler, this.componentNamePrefix + this._componentName, this.componentNamePrefix + this._componentName, "sampleurl", ["seq", "text"]);
+	var resource = new Resource(errorHandler.bind(this), successHandler, this.componentNamePrefix + this._componentName, this.componentNamePrefix + this._componentName, "sampleurl", ["seq", "text"]);
 	var templateUrlBuilder = new TemplateUrlBuilder(window.templateVendor, window.templateName);
-	var componentUrlBuilder = new ComponentUrlBuilder(templateUrlBuilder, this.componentNamePrefix + this._componentName);
-	var articleUrlBuilder = new ArticleUrlBuilder(componentUrlBuilder);
-	resource.setUrlBuilder(articleUrlBuilder);
+	this._componentUrlBuilder = new ComponentUrlBuilder(templateUrlBuilder, this.componentNamePrefix + this._componentName);
+	this._articleUrlBuilder = new ArticleUrlBuilder(this._componentUrlBuilder);
+	resource.setUrlBuilder(this._articleUrlBuilder);
 	return resource;
 };
 
