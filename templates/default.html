@@ -3,7 +3,8 @@
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<link rel="stylesheet" type="text/css" href="../js/flower/css/flowerDefault.css" />
-		<link href="../js/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+		<link href="../js/bootstrap/dist/css/bootstrap.css" rel="stylesheet">
+		<link href="./css/justified.css" rel="stylesheet">
 		
 		<title>Default title</title>
 		
@@ -12,10 +13,10 @@
 		<script type="text/javascript">
 			var run = function(){				
 				var article = new ArticleComponent("articles");
-				article.attachToClass("articles");
+				article.attachToDataComponent("articles");
 				
-				var leftSidebar = new ArticleComponent("leftSidebar");
-				leftSidebar.attachToClass("leftSidebar");
+				//var leftSidebar = new ArticleComponent("leftSidebar");
+				//leftSidebar.attachToClass("leftSidebar");
 				
 				var jumbotron = new ArticleComponent("jumbotron");
 				jumbotron.attachToClass("jumbotron");
@@ -24,91 +25,55 @@
 				main.attachToClass("main");
 				main.addPage("home");
 				main.addPage("about");
-				main.addPage("contact");
+				//main.addPage("contact");
 				main.registerPageComponent(article);
 				main.registerPageComponent(jumbotron);
-				main.setCurrentPage("home");
+				main.setIndexPage("home", "home");
 				
-				leftSidebar.buildComponent();
+				//leftSidebar.buildComponent();
 			}
 			var engine = new Flower(run, "brejchajan", "default", "cz");
 		</script>
 	</head>
 	<body>
-		<nav>
-			<div class="navbar navbar-fixed-top navbar-inverse" role="navigation">
-			  <div class="container">
-				<div class="navbar-header">
-				  <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-					<span class="sr-only">Toggle navigation</span>
-					<span class="icon-bar"></span>
-					<span class="icon-bar"></span>
-					<span class="icon-bar"></span>
-				  </button>
-				  <a class="navbar-brand" href="#home">Project name</a>
-				</div>
-				<div class="collapse navbar-collapse">
-				  <ul class="nav navbar-nav">
-					<li><a href="#home" data-use-template="home">Home</a></li>
-					<li><a href="#about" data-use-template="about">About</a></li>
-					<li><a href="#contact" data-use-template="contact">Contact</a></li>
-					<li><a href="#someotherpage" data-use-template="about">Some other page</a></li>
-				  </ul>
-				</div><!-- /.nav-collapse -->
-			  </div><!-- /.container -->
-			</div><!-- /.navbar -->
-		</nav>
-	<div id="main">
-		<div id="home">
-			<div class="container">
-				  <div class="row row-offcanvas row-offcanvas-right">
-					<div class="col-xs-12 col-sm-9">
-						<p class="pull-right visible-xs">
-							<button type="button" class="btn btn-primary btn-xs" data-toggle="offcanvas">Toggle nav</button>
-						</p>
-						<div class="jumbotron">
-						</div>
-				
-						<div class="content">
-							<section title="article section" class="articles">
-							</section>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-		<div id="about">
-			<div class="container">
-				  <div class="row row-offcanvas row-offcanvas-right">
-					<div class="col-xs-12 col-sm-9">
-						<div class="content">
-							<section title="article section" class="articles">
-							</section>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-		<div id="contact">
-			<div class="container">
-				  <div class="row row-offcanvas row-offcanvas-right">
-					<div class="col-xs-12 col-sm-9">
-						<p class="pull-right visible-xs">
-							<button type="button" class="btn btn-primary btn-xs" data-toggle="offcanvas">Toggle nav</button>
-						</p>
-						<div class="jumbotron">
-						</div>
-				
-						<div class="content">
-							<section title="article section" class="articles">
-							</section>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>	
-							<section title="left sidebar" class="leftSidebar">
-						</section>
+	
+	 <body>
+
+    <div class="container">
+
+      <div class="masthead">
+        <h3 class="text-muted">Project name</h3>
+        <ul class="nav nav-justified">
+			<li><a href="#home" data-use-template="home">Domů</a></li>
+			<li><a href="#about" data-use-template="about">O projektu</a></li>
+			<li><a href="#contact" data-use-template="about">Kontakty</a></li>
+			<li><a href="#someotherpage" data-use-template="about">Další projekty</a></li>
+			<li><a href="#someotherpage2" data-use-template="home">NECO</a></li>
+		</ul>
+      </div>
+	  <div id="main">
+	  	  <div id="home">
+			  <!-- Jumbotron -->
+			  <div class="jumbotron">
+			  </div>
+
+			  <!-- Example row of columns -->
+			  
+				<div class="articles" data-component="articles" data-children-class="col-lg-4"></div>
+			  
+		  </div>
+		  <div id="about">
+			  <div class="starter-template">
+				<div class="articles" data-component="articles"></div>
+			  </div>
+		  </div>
+	  </div>
+	  
+      <!-- Site footer -->
+      <div class="footer">
+        <p>&copy; Jan Brejcha 2013</p>
+      </div>
+
+    </div> <!-- /container -->
 	</body>
 </html>
