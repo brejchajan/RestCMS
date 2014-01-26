@@ -36,6 +36,15 @@ Component.prototype.attachToClass = function(className){
 	//this.buildComponent();
 };
 
+/**
+ Attaches this component to the data-component atribute in html DOM structure.
+ @param dataComponent - data-component attribute to attach this component to.
+ */
+Component.prototype.attachToDataComponent = function(dataComponent){
+	this._parent = document.querySelector("[data-component=" + dataComponent + "]");
+	//this.buildComponent();
+};
+
 Component.prototype.reattachToClass = function(){
 	var tempParent = document.querySelector("." + this._parent.className);
 	if (tempParent != null){
