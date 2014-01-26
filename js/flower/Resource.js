@@ -143,7 +143,7 @@ Resource.prototype.getAllResources = function(callback, asynchronous){
 						  callback(this.removeLineBreaks(res));
 						  }).bind(this),
 				error: (function(XMLHttpRequest, textStatus, errorThrown) {
-						this.errorHandler("Chyba.\n" + textStatus + " " + errorThrown);
+						this.errorHandler(XMLHttpRequest);
 						}).bind(this)
 				});
 };
@@ -178,7 +178,7 @@ Resource.prototype.getResource = function(url, callback, asynchronous){
 						  callback(res);
 						  }).bind(this),
 				error: (function(XMLHttpRequest, textStatus, errorThrown) {
-						this.errorHandler("Chyba.\n" + textStatus + " " + errorThrown);
+						this.errorHandler(XMLHttpRequest);
 						}).bind(this)
 				});
 };
@@ -205,7 +205,7 @@ Resource.prototype.updateResource = function(data, url, prevText, cancelHandler)
 						  }).bind(this),
 				error: (function(XMLHttpRequest, textStatus, errorThrown) {
 						cancelHandler(cell, prevText);
-						this.errorHandler(textStatus + ": " + errorThrown);
+						this.errorHandler(XMLHttpRequest);
 						}).bind(this)
 				});
 };
@@ -233,7 +233,7 @@ Resource.prototype.addResource = function(data, callback, asynchronous){
 							callback(this.removeLineBreaks(res));
 						  }).bind(this),
 				error: (function(XMLHttpRequest, textStatus, errorThrown) {
-						this.errorHandler(textStatus + ": " + errorThrown);
+						this.errorHandler(XMLHttpRequest);
 						}).bind(this)
 				});
 };
@@ -251,7 +251,7 @@ Resource.prototype.removeResource = function(row){
 						  this.listAllResources();
 						  }).bind(this),
 				error: (function(XMLHttpRequest, textStatus, errorThrown) {
-						this.errorHandler("resourceCouldNotBeDeleted");
+						this.errorHandler(XMLHttpRequest);
 						}).bind(this)
 				});
 };
