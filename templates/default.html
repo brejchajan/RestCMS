@@ -38,7 +38,7 @@
 				
 				//leftSidebar.buildComponent();
 			}
-			var engine = new Flower(run, "brejchajan", "default", "cz");
+			var engine = new Flower(run, "http://localhost", "brejchajan", "default", "cz");
 		</script>
 		<!-- Google API - DO NOT REMOVE, needed for login! -->
 		<script type="text/javascript">
@@ -90,8 +90,26 @@
       <!-- Site footer -->
       <div class="footer">
         <p>&copy; Jan Brejcha 2013</p>
-      </div>
-
+        
+        <div id="gConnect">
+			<button class="g-signin"
+				data-scope="https://www.googleapis.com/auth/plus.login"
+				data-requestvisibleactions="http://schemas.google.com/AddActivity"
+				data-clientId="965352633379-tpurhtet0fuvffit4bi2epdsh47p1tos.apps.googleusercontent.com"
+				data-accesstype="offline"
+				data-callback="onSignInCallback"
+				data-theme="dark"
+				data-cookiepolicy="single_host_origin">
+			</button>
+	    </div>
+		<button id="gDisconnect">Odhlásit se</button>
+		
+		</div> <!-- /footer -->
+		<script type="text/javascript">		
+			function onSignInCallback(authResult) {
+			  	Flower.onSignInCallback(authResult);
+			}
+		</script>
     </div> <!-- /container -->
 	</body>
 </html>

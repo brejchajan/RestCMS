@@ -8,13 +8,21 @@
 	Registers onLoad event listener to start the Flower system
 	@param callback - user callback function that initializes components on the page
 */
-var Flower = function(callback, templateVendor, templateName, defaultLanguage){
+var Flower = function(callback, serverAddress, templateVendor, templateName, defaultLanguage){
 	window.templateName = templateName;
 	window.templateVendor = templateVendor;
 	addEventListener("load", callback, false);
+	addEventListener("load", Flower.initPage.bind(this), false);
 	Flower.initLanguages();
 	Flower.setDefaultLanguage(defaultLanguage);
+	window.serverAddress = serverAddress;
+	window.permission = null;
 };
+
+Flower.initPage = function(){
+	$('#gDisconnect').click(Flower.logout.bind(this));
+	$('#gDisconnect').hide();
+}
 
 /**
 	proxy for translate method
@@ -69,3 +77,64 @@ Flower.addTranslation = function(translationArray){
 	}
 	this._translations[this._translations.length] = translationArray;
 };
+
+Flower.onSignInCallback = function(authResult){
+	if (authResult['access_token']) {
+        // The user is signed in
+        this._authResult = authResult;
+        Flower.connectServer();
+	} else if (authResult['error']) {
+        // There was an error, which means the user is not signed in.
+        // As an example, you can troubleshoot by writing to the console:
+        console.log('There was an error: ' + authResult['error']);
+        $('#authResult').append('Logged out');
+        $('#authOps').hide('slow');
+        $('#gConnect').show();
+	}
+}
+
+Flower.connectServer = function(){
+	$.ajax({
+		   type: 'GET',
+		   url: window.serverAddress + '/restcms/restcms.php/connect',
+		   contentType: 'application/octet-stream; charset=utf-8',
+		   success: (function(result) {
+				var res = JSON.parse(result);
+				$.ajax({
+					  type: 'POST',
+					  url: window.serverAddress + '/restcms/restcms.php/connect?state='+res.state,
+					  contentType: 'application/octet-stream; charset=utf-8',
+					  success: function(result) {
+							var res = JSON.parse(result);
+							Flower.doLogin(res);
+					  },
+					  processData: false,
+					  data: this._authResult.code
+				});
+		   }).bind(this)
+	});
+}
+
+Flower.doLogin = function(response){
+	window.permission = response.permission;
+	window.state = response.state;
+	$('#gConnect').hide('slow');
+	$('#gDisconnect').show('slow');
+}
+
+Flower.doLogout = function(){
+	$('#gConnect').show('slow');
+	$('#gDisconnect').hide('slow');
+	window.permission = null;
+}
+
+Flower.logout = function(){
+	$.ajax({
+		   type: 'DELETE',
+		   url: window.serverAddress + '/restcms/restcms.php/connect?state='+window.state,
+		   contentType: 'application/octet-stream; charset=utf-8',
+		   success: function(result) {
+				Flower.doLogout();
+		   }
+	});
+}
