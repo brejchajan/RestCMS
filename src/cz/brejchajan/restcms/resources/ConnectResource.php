@@ -36,6 +36,7 @@ class ConnectResource
 			$state = Helper::generateNewState();
 			$response = array("state" => $state);
 			$app['session']->set('state', $state);
+			$app['session']->set('permission', '');
 			return new Response(json_encode($response), 200);	
 		});
 		
@@ -64,9 +65,13 @@ class ConnectResource
 					->getAttributes();
 				$gplus_id = $attributes["payload"]["sub"];
 
+				//TODO verify permission
+				$permission = "ADMIN";
+				
 				// Store the token in the session for later use.
 				$app['session']->set('token', json_encode($token));
-				$response = array("state" => $state, "permission" => "ADMIN");
+				$app['session']->set('permission', $permission);
+				$response = array("state" => $state, "permission" => $permission);
 				return new Response(json_encode($response), 200);
 			}
 			return new Response("Unable to verify login at Google. Try again later.", 522);
@@ -81,6 +86,7 @@ class ConnectResource
 			$googleClient->revokeToken($token);
 			// Remove the credentials from the user's session.
 			$app['session']->set('token', '');
+			$app['session']->set('permission', '');
 			return new Response('Successfully disconnected', 200);
 		});
 	}

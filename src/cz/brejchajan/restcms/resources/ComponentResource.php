@@ -56,26 +56,46 @@ class ComponentResource
 		 * Install new component 
 		 */ 
 		$this->rest->post('/template/{vendor}/{name}/component',
-		       	function($vendor, $name, Request $request) use($em){ 
-
+		       	function($vendor, $name, Request $request) use($em, $app){ 
+			
+			$r = Helper::checkState($request, $app);
+			if ($r != null){
+				return $r;
+			}
+			$state = $app['session']->get('state'); 
+			if (!Helper::isAdminLogged($app)){
+				$r = new Response("Access denied", 403);
+				$r->headers->set('XState', $state);
+				return $r;
+			}
+			
 			$template = Template::findTemplate($name, $vendor, $em);		
 
 			if ($template == null)
-				return new Response("This template is not installed", 422);
+				$r = new Response("This template is not installed", 422);
+				$r->headers->set('XState', $state);
+				return $r;
 			$msg = $request->getContent();
 			$component = json_decode($msg);
 			if (!$component){
-				return new Response("Unable to parse JSON string.", 422);	
+				$r = new Response("Unable to parse JSON string.", 422);	
+				$r->headers->set('XState', $state);
+				return $r;
 			}
-			if (Component::isInstalled($template, $component->name, $em))
-				return new Response("This component is already installed", 422);			
+			if (Component::isInstalled($template, $component->name, $em)){
+				$r = new Response("This component is already installed", 422);
+				$r->headers->set('XState', $state);
+				return $r;			
+			}
 			$newComponent = new Component(Helper::getNextId('Component', $em),
 			       				$component->name, $template);
 				
 			$em->persist($newComponent);
 			$em->flush();	
 			
-			return new Response("http://".$_SERVER['SERVER_NAME'].$_SERVER['SCRIPT_NAME']."/template/$vendor/$name/component/".$newComponent->getName()."", 201);
+			$r = new Response("http://".$_SERVER['SERVER_NAME'].$_SERVER['SCRIPT_NAME']."/template/$vendor/$name/component/".$newComponent->getName()."", 201);
+			$r->headers->set('XState', $state);
+			return $r;
 		});
 		 
 	}

@@ -1,5 +1,8 @@
 <?php
 
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+
 class Helper{
 
 	public static function getNextId($entityName, $em){
@@ -41,6 +44,23 @@ class Helper{
 	public static function generateNewState(){
 		return hash('sha256', rand());
     }
+    
+    public static function checkState($request, $app){
+	    $state = Helper::generateNewState();
+    	if ($request->get('state') != ($app['session']->get('state'))) {
+    		//GENERATE NEW STATE, but DO NOT SEND it to the client. It is an attacker!!!
+    		$app['session']->set('state', $state);
+			return new Response($request->get('state') . ' -- ' . $app['session']->get('state'), 401);
+		}
+		$app['session']->set('state', $state);
+		return null;
+	}
+	
+	public static function isAdminLogged($app){
+		if ($app['session']->get('permission') == "ADMIN")
+			return true;
+		return false;
+	}
 
 
 }

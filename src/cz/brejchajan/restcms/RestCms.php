@@ -35,7 +35,6 @@ class RestCms{
 			'twig.path' => __DIR__,
 		));
 		$this->rest->register(new Silex\Provider\SessionServiceProvider());
-		
 		$this->templateResource = new TemplateResource($em, $this->rest);
 		$this->componentResource = new ComponentResource($em, $this->rest);
 		$this->articleResource = new ArticleResource($em, $this->rest);
