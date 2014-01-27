@@ -139,7 +139,8 @@ Resource.prototype.getAllResources = function(callback, asynchronous){
 							 XMLHttpRequest.setRequestHeader("X-Filter", filter);
 							 }
 							 }).bind(this),
-				success: (function(res){
+				success: (function(res, status, req){
+						  this.updateState(req);
 						  callback(this.removeLineBreaks(res));
 						  }).bind(this),
 				error: (function(XMLHttpRequest, textStatus, errorThrown) {
@@ -174,8 +175,8 @@ Resource.prototype.getResource = function(url, callback, asynchronous){
 							 XMLHttpRequest.setRequestHeader("X-Filter", filter);
 							 }
 							 }).bind(this),
-				success: (function(res){
-						  this.updateState(res);
+				success: (function(res, status, req){
+						  this.updateState(req);
 						  callback(res);
 						  }).bind(this),
 				error: (function(XMLHttpRequest, textStatus, errorThrown) {
@@ -201,8 +202,8 @@ Resource.prototype.updateResource = function(data, url, prevText, cancelHandler)
 				type: "PUT",
 				contentType: "application/json; charset=utf-8",
 				data: jsonString,
-				success: (function(res){
-						  this.updateState(res);
+				success: (function(res, status, req){
+						  this.updateState(req);
 						  this.successHandler();
 						  }).bind(this),
 				error: (function(XMLHttpRequest, textStatus, errorThrown) {
@@ -230,8 +231,8 @@ Resource.prototype.addResource = function(data, callback, asynchronous){
 				contentType: "application/json; charset=utf-8",
 				async: asynchronous,
 				data: jsonRequest,
-				success: (function(res){
-						  this.updateState(res);
+				success: (function(res, status, req){
+						  this.updateState(req);
 						  if (callback != null)
 							callback(this.removeLineBreaks(res));
 						  }).bind(this),
@@ -242,10 +243,10 @@ Resource.prototype.addResource = function(data, callback, asynchronous){
 };
 
 Resource.prototype.updateState = function(res){
-	if (res != null){
-		var result = JSON.parse(res);
-		if (result.state != null)
-			window.state = result.state;
+	var state = res.getResponseHeader('XState');
+	if (state != null){
+		alert(state);
+		window.state = state;
 	}
 }
 
@@ -257,8 +258,8 @@ Resource.prototype.removeResource = function(row){
 				url: this.url + row.id,
 				type: "DELETE",
 				contentType: "application/json; charset=utf-8",
-				success: (function(res){
-						  this.updateState(res);
+				success: (function(res, status, req){
+						  this.updateState(req);
 						  this.successHandler(this.resourceName + " deleted successfully.");
 						  this.listAllResources();
 						  }).bind(this),

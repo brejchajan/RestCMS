@@ -118,6 +118,7 @@ Flower.connectServer = function(){
 
 Flower.doLogin = function(response){
 	window.state = response.state;
+	alert(window.state);
 	this._mainComponent.onLogin(response);
 	$('#gConnect').hide('slow');
 	$('#gDisconnect').show('slow');
