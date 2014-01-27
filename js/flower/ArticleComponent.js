@@ -20,6 +20,7 @@ var ArticleComponent = function(componentName){
 	this._dragElementContent = null;
 	this._addArticleButton = null;
 	this._longPressTimer = null;
+	this._loginPrefs = null;
 };
 
 /**
@@ -78,6 +79,9 @@ ArticleComponent.prototype.buildComponent = function(){
 	this._addArticleButton.type = "button";
 	this._addArticleButton.value = _("Add article");
 	this._addArticleButton.addEventListener("click", this.createNewArticle.bind(this), false);
+	if (!(this._loginPrefs != null && this._loginPrefs.permission == "ADMIN")){
+		$(this._addArticleButton).hide();
+	}
 	this._parent.appendChild(this._addArticleButton);
 	
 	//create new resource
@@ -131,7 +135,13 @@ ArticleComponent.prototype.createTextInputComponent = function(resourceUrl, arti
 	var childrenClassName = this._parent.getAttribute("data-children-class");
 	var articleTag = document.createElement("article");
 	if (childrenClassName != null && childrenClassName != undefined){
-		articleTag.className = childrenClassName;
+		//if admin
+		if (this._loginPrefs != null && this._loginPrefs.permission == "ADMIN"){
+			articleTag.setAttribute('data-class', childrenClassName);
+		}
+		else{
+			articleTag.className = childrenClassName;
+		}
 	}
 	articleTag.style.position = "relative";
 	//make article tag draggable
@@ -154,6 +164,9 @@ ArticleComponent.prototype.createTextInputComponent = function(resourceUrl, arti
 	this._articles.push({article:textInput, tag:articleTag});
 	var toolBar = this.buildArticleToolBar(textInput, articleDiv, articleTag);
 	this.makeUnselectable(toolBar);
+	if (!(this._loginPrefs != null && this._loginPrefs.permission == "ADMIN")){
+		$(toolBar).hide();
+	}
 	articleTag.insertBefore(toolBar, articleDiv);
 };
 
@@ -163,24 +176,29 @@ ArticleComponent.prototype.setDraggable = function(article){
 };
 
 ArticleComponent.prototype.registerDrag = function(tag){
-	//find first textinput component
-	//find article text input component
-	for (var key in this._articles){
-		var art = this._articles[key];
-		if (art.tag == this._firstArticle){
-			this._firstSeq = art.article.getSeq();
+	//only admin can drag and drop articles
+	if (this._loginPrefs != null){
+		if (this._loginPrefs.permission == "ADMIN"){
+			//find first textinput component
+			//find article text input component
+			for (var key in this._articles){
+				var art = this._articles[key];
+				if (art.tag == this._firstArticle){
+					this._firstSeq = art.article.getSeq();
+				}
+			}
+			this._dragElement = tag
+			
+			var articleDiv = tag.firstChild.nextSibling;
+			var text = _("Drag this article to a new position between articles.");
+			if (articleDiv.innerHTML != text){
+				this._dragElementContent = articleDiv.innerHTML;
+				this._longPressTimer = setTimeout((function(){
+					//change the drag element content to the advice what to do when dragging
+					articleDiv.innerHTML = text;
+				}).bind(this), 200);
+			}
 		}
-	}
-	this._dragElement = tag
-	
-	var articleDiv = tag.firstChild.nextSibling;
-	var text = _("Drag this article to a new position between articles.");
-	if (articleDiv.innerHTML != text){
-		this._dragElementContent = articleDiv.innerHTML;
-		this._longPressTimer = setTimeout((function(){
-			//change the drag element content to the advice what to do when dragging
-			articleDiv.innerHTML = text;
-		}).bind(this), 200);
 	}
 };
 
@@ -367,3 +385,39 @@ ArticleComponent.prototype.buildArticleToolBar = function(textInput, articleDiv,
 	toolBar.appendChild(toolBarDeleteBox);
 	return toolBar;
 };
+
+ArticleComponent.prototype.onLogin = function(loginPrefs){
+	if (loginPrefs.permission == "ADMIN"){
+		$(this._addArticleButton).show('slow');
+	}
+	this._loginPrefs = loginPrefs;
+	//show toolbars of all articles
+	var article = this._firstArticle;
+	while(article != null){
+		var toolBar = $(article).find(".articleToolBar");
+		$(toolBar).show('slow');
+		//make article list linear (remove class name of article children)
+		article.setAttribute('data-class', article.className);
+		article.className = "";
+		//update article
+		article = article.nextSibling;
+	}
+
+}
+
+ArticleComponent.prototype.onLogout = function(){
+	this._loginPrefs = null;
+	$(this._addArticleButton).hide('slow');
+	
+	//hide toolbars of all articles
+	var article = this._firstArticle;
+	while(article != null){
+		var toolBar = $(article).find(".articleToolBar");
+		$(toolBar).hide('slow');
+		//set the classname of articles back
+		article.className = article.getAttribute('data-class');
+		article.setAttribute('data-class', null);
+		//update article
+		article = article.nextSibling;
+	}
+}

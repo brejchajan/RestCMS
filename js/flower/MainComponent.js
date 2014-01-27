@@ -14,7 +14,7 @@ var MainComponent = function(){
 	this._pages = [];
 	this._currentPageId = null;
 	this._pageComponents = [];
-	
+	this._loginPrefs = null;
 	
 	//init functions
 	this.registerHashEventListeners();
@@ -104,9 +104,24 @@ MainComponent.prototype.buildComponent = function(){
 	//reattach components
 	for (var key in this._pageComponents){
 		var component = this._pageComponents[key];
-		//TODO uncomment this line and implement automatic installation to component.
 		component.componentNamePrefix = prefix;
 		component.reattachToClass();
 	}
 	
 };
+
+MainComponent.prototype.onLogin = function(loginPrefs){
+	this._loginPrefs = loginPrefs;
+	for (var key in this._pageComponents){
+		var component = this._pageComponents[key];
+		component.onLogin(loginPrefs);
+	}
+}
+
+MainComponent.prototype.onLogout = function(){
+	this._loginPrefs = null;
+	for (var key in this._pageComponents){
+		var component = this._pageComponents[key];
+		component.onLogout();
+	}
+}

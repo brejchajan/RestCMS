@@ -55,6 +55,7 @@ Component.prototype.reattachToClass = function(){
 
 
 
+
 /**
 	Attaches this component to the DOM element.
 	@param element - javascript DOM element

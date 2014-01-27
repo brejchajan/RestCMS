@@ -36,6 +36,7 @@
 				main.registerPageComponent(jumbotron);
 				main.setIndexPage("home", "home");
 				
+				Flower.setMainComponent(main);
 				//leftSidebar.buildComponent();
 			}
 			var engine = new Flower(run, "http://localhost", "brejchajan", "default", "cz");
@@ -81,8 +82,10 @@
 			  </div>
 		  </div>
 		  <div id="about">
-			  <div class="starter-template">
-				<div class="articles" data-component="articles"></div>
+			  <div class="content">
+				  <div class="starter-template">
+					<div class="articles" data-component="articles"></div>
+				  </div>
 			  </div>
 		  </div>
 	  </div>

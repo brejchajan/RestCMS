@@ -17,6 +17,8 @@ var Flower = function(callback, serverAddress, templateVendor, templateName, def
 	Flower.setDefaultLanguage(defaultLanguage);
 	window.serverAddress = serverAddress;
 	window.permission = null;
+	window.state = null;
+	this._mainComponent = null;
 };
 
 Flower.initPage = function(){
@@ -116,8 +118,8 @@ Flower.connectServer = function(){
 }
 
 Flower.doLogin = function(response){
-	window.permission = response.permission;
 	window.state = response.state;
+	this._mainComponent.onLogin(response);
 	$('#gConnect').hide('slow');
 	$('#gDisconnect').show('slow');
 }
@@ -125,7 +127,8 @@ Flower.doLogin = function(response){
 Flower.doLogout = function(){
 	$('#gConnect').show('slow');
 	$('#gDisconnect').hide('slow');
-	window.permission = null;
+	
+	this._mainComponent.onLogout();
 }
 
 Flower.logout = function(){
@@ -137,4 +140,11 @@ Flower.logout = function(){
 				Flower.doLogout();
 		   }
 	});
+}
+
+/**
+ Registers main component to handle login/logout or other system events
+ */
+Flower.setMainComponent = function(mainComponent){
+	this._mainComponent = mainComponent;
 }
