@@ -32,13 +32,13 @@ var TemplateUrlBuilder = function(vendor, name){
 	this.name = name;
 }
 TemplateUrlBuilder.prototype.post = function(){
-	return "http://localhost/restcms/restcms.php/template";
+	return "restcms.php/template?state="+window.state;
 }
 TemplateUrlBuilder.prototype.get = function(){
-	return "http://localhost/restcms/restcms.php/template/" + this.vendor + "/" + this.name;
+	return "restcms.php/template/" + this.vendor + "/" + this.name;
 }
 TemplateUrlBuilder.prototype.put = function(){
-	return "http://localhost/restcms/restcms.php/template/" + this.vendor + "/" + this.name;
+	return "restcms.php/template/" + this.vendor + "/" + this.name + "?state="+window.state;
 }
 
 
@@ -48,24 +48,24 @@ var ComponentUrlBuilder = function(template, name){
 }
 
 ComponentUrlBuilder.prototype.post = function(){
-	return "http://localhost/restcms/restcms.php/template/" + this.template.vendor + "/" + this.template.name + "/component";
+	return "restcms.php/template/" + this.template.vendor + "/" + this.template.name + "/component?state="+window.state;
 }
 ComponentUrlBuilder.prototype.get = function(){
-	return "http://localhost/restcms/restcms.php/template/" + this.template.vendor + "/" + this.template.name + "/component" + "/" + this.name;
+	return "restcms.php/template/" + this.template.vendor + "/" + this.template.name + "/component" + "/" + this.name;
 }
 ComponentUrlBuilder.prototype.put = function(){
-	return "http://localhost/restcms/restcms.php/template/" + this.template.vendor + "/" + this.template.name + "/component" + "/" + this.name;
+	return "restcms.php/template/" + this.template.vendor + "/" + this.template.name + "/component" + "/" + this.name + "?state="+window.state;
 }
 
 var ArticleUrlBuilder = function(component){
     this.component = component;
 };
 ArticleUrlBuilder.prototype.post = function(){
-	return "http://localhost/restcms/restcms.php/template/" + this.component.template.vendor + "/" + this.component.template.name + "/component" + "/" + this.component.name + "/article";
+	return "restcms.php/template/" + this.component.template.vendor + "/" + this.component.template.name + "/component" + "/" + this.component.name + "/article?state="+window.state;
 }
 ArticleUrlBuilder.prototype.get = function(){
-	return "http://localhost/restcms/restcms.php/template/" + this.component.template.vendor + "/" + this.component.template.name + "/component" + "/" + this.component.name + "/article";
+	return "restcms.php/template/" + this.component.template.vendor + "/" + this.component.template.name + "/component" + "/" + this.component.name + "/article";
 }
 ArticleUrlBuilder.prototype.put = function(){
-	return "/article";
+	return "/article?state="+window.state;
 }

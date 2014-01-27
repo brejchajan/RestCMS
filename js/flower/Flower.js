@@ -8,14 +8,13 @@
 	Registers onLoad event listener to start the Flower system
 	@param callback - user callback function that initializes components on the page
 */
-var Flower = function(callback, serverAddress, templateVendor, templateName, defaultLanguage){
+var Flower = function(callback, templateVendor, templateName, defaultLanguage){
 	window.templateName = templateName;
 	window.templateVendor = templateVendor;
 	addEventListener("load", callback, false);
 	addEventListener("load", Flower.initPage.bind(this), false);
 	Flower.initLanguages();
 	Flower.setDefaultLanguage(defaultLanguage);
-	window.serverAddress = serverAddress;
 	window.permission = null;
 	window.state = null;
 	this._mainComponent = null;
@@ -98,13 +97,13 @@ Flower.onSignInCallback = function(authResult){
 Flower.connectServer = function(){
 	$.ajax({
 		   type: 'GET',
-		   url: window.serverAddress + '/restcms/restcms.php/connect',
+		   url: 'http://' + window.location.host + '/restcms.php/connect',
 		   contentType: 'application/octet-stream; charset=utf-8',
 		   success: (function(result) {
 				var res = JSON.parse(result);
 				$.ajax({
 					  type: 'POST',
-					  url: window.serverAddress + '/restcms/restcms.php/connect?state='+res.state,
+					  url: 'http://' + window.location.host + '/restcms.php/connect?state='+res.state,
 					  contentType: 'application/octet-stream; charset=utf-8',
 					  success: function(result) {
 							var res = JSON.parse(result);
@@ -134,7 +133,7 @@ Flower.doLogout = function(){
 Flower.logout = function(){
 	$.ajax({
 		   type: 'DELETE',
-		   url: window.serverAddress + '/restcms/restcms.php/connect?state='+window.state,
+		   url: 'http://' + window.location.host + '/restcms.php/connect?state='+window.state,
 		   contentType: 'application/octet-stream; charset=utf-8',
 		   success: function(result) {
 				Flower.doLogout();

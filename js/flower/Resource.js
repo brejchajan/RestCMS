@@ -175,6 +175,7 @@ Resource.prototype.getResource = function(url, callback, asynchronous){
 							 }
 							 }).bind(this),
 				success: (function(res){
+						  this.updateState(res);
 						  callback(res);
 						  }).bind(this),
 				error: (function(XMLHttpRequest, textStatus, errorThrown) {
@@ -196,11 +197,12 @@ Resource.prototype.isBound = function(name){
 Resource.prototype.updateResource = function(data, url, prevText, cancelHandler){
     var jsonString = JSON.stringify(data);
     jQuery.ajax({
-				url: url,
+				url: url + '?state=' + window.state,
 				type: "PUT",
 				contentType: "application/json; charset=utf-8",
 				data: jsonString,
 				success: (function(res){
+						  this.updateState(res);
 						  this.successHandler();
 						  }).bind(this),
 				error: (function(XMLHttpRequest, textStatus, errorThrown) {
@@ -229,6 +231,7 @@ Resource.prototype.addResource = function(data, callback, asynchronous){
 				async: asynchronous,
 				data: jsonRequest,
 				success: (function(res){
+						  this.updateState(res);
 						  if (callback != null)
 							callback(this.removeLineBreaks(res));
 						  }).bind(this),
@@ -237,6 +240,14 @@ Resource.prototype.addResource = function(data, callback, asynchronous){
 						}).bind(this)
 				});
 };
+
+Resource.prototype.updateState = function(res){
+	if (res != null){
+		var result = JSON.parse(res);
+		if (result.state != null)
+			window.state = result.state;
+	}
+}
 
 Resource.prototype.removeResource = function(row){
     if (this.urlBuilder !== null){
@@ -247,6 +258,7 @@ Resource.prototype.removeResource = function(row){
 				type: "DELETE",
 				contentType: "application/json; charset=utf-8",
 				success: (function(res){
+						  this.updateState(res);
 						  this.successHandler(this.resourceName + " deleted successfully.");
 						  this.listAllResources();
 						  }).bind(this),

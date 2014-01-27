@@ -38,6 +38,13 @@ ArticleComponent.prototype.loadArticlesCallback = function(data){
 	}
 };
 
+ArticleComponent.prototype.isAdminLogged = function(){
+	if (this._loginPrefs != null && this._loginPrefs.permission == "ADMIN"){
+		return true;
+	}
+	return false;
+}
+
 /**
  Resource factory method for articles.
  */
@@ -58,8 +65,8 @@ ArticleComponent.prototype.createArticleResource = function(){
 		}
 	}
 	var resource = new Resource(errorHandler.bind(this), successHandler, this.componentNamePrefix + this._componentName, this.componentNamePrefix + this._componentName, "sampleurl", ["seq", "text"]);
-	var templateUrlBuilder = new TemplateUrlBuilder(window.templateVendor, window.templateName);
-	this._componentUrlBuilder = new ComponentUrlBuilder(templateUrlBuilder, this.componentNamePrefix + this._componentName);
+	this._templateUrlBuilder = new TemplateUrlBuilder(window.templateVendor, window.templateName);
+	this._componentUrlBuilder = new ComponentUrlBuilder(this._templateUrlBuilder, this.componentNamePrefix + this._componentName);
 	this._articleUrlBuilder = new ArticleUrlBuilder(this._componentUrlBuilder);
 	resource.setUrlBuilder(this._articleUrlBuilder);
 	return resource;
@@ -164,7 +171,7 @@ ArticleComponent.prototype.createTextInputComponent = function(resourceUrl, arti
 	this._articles.push({article:textInput, tag:articleTag});
 	var toolBar = this.buildArticleToolBar(textInput, articleDiv, articleTag);
 	this.makeUnselectable(toolBar);
-	if (!(this._loginPrefs != null && this._loginPrefs.permission == "ADMIN")){
+	if (!this.isAdminLogged()){
 		$(toolBar).hide();
 	}
 	articleTag.insertBefore(toolBar, articleDiv);
@@ -402,8 +409,8 @@ ArticleComponent.prototype.onLogin = function(loginPrefs){
 		//update article
 		article = article.nextSibling;
 	}
-
 }
+
 
 ArticleComponent.prototype.onLogout = function(){
 	this._loginPrefs = null;
