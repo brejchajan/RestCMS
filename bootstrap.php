@@ -4,7 +4,7 @@ use Doctrine\ORM\Tools\Setup;
 use Doctrine\ORM\EntityManager;
 
 require_once ("src/cz/brejchajan/restcms/config.php");
-require_once ("vendor/autoload.php");
+require_once __DIR__.'/vendor/autoload.php';
 // Create a simple "default" Doctrine ORM configuration for Annotations
 
 $isDevMode = true;
@@ -22,4 +22,25 @@ $conn = array(
 );
 //obtaining the entity manager
 $em = EntityManager::create($conn, $config);
+
+
+/*function customError($errno, $errstr)
+  {
+  echo "<b>Error:</b> [$errno] $errstr<br>";
+  echo "Ending Script";
+  die();
+  }
+  
+set_error_handler("customError");*/
+
+//google client init
+$client = new Google_Client();
+
+$client->setApplicationName(APPLICATION_NAME);
+$client->setClientId(CLIENT_ID);
+$client->setClientSecret(CLIENT_SECRET);
+$client->setRedirectUri('postmessage');
+
+$plus = new Google_PlusService($client);
+
 ?>
