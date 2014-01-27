@@ -37,8 +37,11 @@ class Helper{
 		}
 		return $res[0]->getId();
 	}
+	
+	public static function generateNewState(){
+		return hash('sha256', rand());
+    }
 
 
 }
 ?>
-			
