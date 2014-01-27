@@ -2,6 +2,7 @@
 
 require_once(SRCDIR . "/RestCms.php");
 require_once(SRCDIR . "/persistence/Component.php");
+require_once(SRCDIR . "/resources/ConnectResource.php");
 require_once(SRCDIR . "/Helper.php");
 
 
