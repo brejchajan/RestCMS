@@ -46,12 +46,10 @@ class Helper{
     }
     
     public static function checkState($request, $app){
-	    $state = Helper::generateNewState();
     	if ($request->get('state') != ($app['session']->get('state'))) {
-    		//GENERATE NEW STATE, but DO NOT SEND it to the client. It is an attacker!!!
-    		$app['session']->set('state', $state);
 			return new Response($request->get('state') . ' -- ' . $app['session']->get('state'), 401);
 		}
+	    $state = Helper::generateNewState();
 		$app['session']->set('state', $state);
 		return null;
 	}

@@ -198,7 +198,7 @@ Resource.prototype.isBound = function(name){
 Resource.prototype.updateResource = function(data, url, prevText, cancelHandler){
     var jsonString = JSON.stringify(data);
     jQuery.ajax({
-				url: url + '?state=' + window.state,
+				url: url,
 				type: "PUT",
 				contentType: "application/json; charset=utf-8",
 				data: jsonString,
@@ -245,7 +245,6 @@ Resource.prototype.addResource = function(data, callback, asynchronous){
 Resource.prototype.updateState = function(res){
 	var state = res.getResponseHeader('XState');
 	if (state != null){
-		alert(state);
 		window.state = state;
 	}
 }

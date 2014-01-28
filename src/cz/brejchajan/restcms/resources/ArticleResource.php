@@ -79,28 +79,21 @@ class ArticleResource
 	       	
 		$this->rest->post('/template/{vendor}/{name}/component/{cname}/article',
 		       	function($vendor, $name, $cname, Request $request) use($em, $app){ 
-			$r = Helper::checkState($request, $app);
-			if ($r != null){
-				return $r;
-			}
-			$state = $app['session']->get('state'); 
+
 			if (!Helper::isAdminLogged($app)){
 				$r = new Response("Access denied", 403);
-				$r->headers->set('XState', $state);
 				return $r;
 			}
 			$template = Template::findTemplate($name, $vendor, $em);
 			if ($template == NULL){
 				$r = new Response("Template from vendor $vendor with name $name is not installed",
 				       	422);
-				$r->headers->set('XState', $state);
 				return $r;
 			}
 			$component = Component::find($template, $cname, $em);
 			if ($component == NULL){
 				$r = new Response("Component named " . $cname . 
 					" is not installed in this template;", 423);
-				$r->headers->set('XState', $state);
 				return $r;
 			}
 			$msg = $request->getContent();
@@ -121,7 +114,6 @@ class ArticleResource
 			$em->flush();
 			
 			$r = new Response($url, 201);
-			$r->headers->set('XState', $state);
 			return $r;
 		});
 		
@@ -130,20 +122,13 @@ class ArticleResource
 		 */
 		$this->rest->put('/article/{id}', function($id, Request $request) use($em, $app){
 		
-			$r = Helper::checkState($request, $app);
-			if ($r != null){
-				return $r;
-			}
-			$state = $app['session']->get('state'); 
 			if (!Helper::isAdminLogged($app)){
 				$r = new Response("Access denied", 403);
-				$r->headers->set('XState', $state);
 				return $r;
 			}
 			$article = $em->find('Article', $id);
 			if ($article == NULL){
 				$r = new Response("This article does not exist.", 400);
-				$r->headers->set('XState', $state);
 				return $r;
 			}
 			$msg = $request->getContent();
@@ -155,7 +140,6 @@ class ArticleResource
 			$em->persist($article);
 			$em->flush();
 			$r = new Response("", 200);
-			$r->headers->set('XState', $state);
 			return $r;
 		});
 		

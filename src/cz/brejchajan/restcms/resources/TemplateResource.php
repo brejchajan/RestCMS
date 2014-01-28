@@ -52,6 +52,31 @@ class TemplateResource
 				->where("t.vendor = '".$vendor."'");
 			$q = $qb->getQuery();
 			$result = $q->getArrayResult();
+
+			$json = json_encode($result);
+
+			if($json == NULL){
+				return new Response("Error retrieving objects from database.", 500);
+			}
+			return new Response($json, 200);	
+		});
+		
+		/**
+		 * Check if template from vendor with name is installed
+		 */
+		$this->rest->get('/template/{vendor}/{name}', function($vendor, $name) use($em){
+			$qb = $em->createQueryBuilder();
+			$qb->select('t')
+				->from('Template', 't')
+				->where($qb->expr()->andX(
+						$qb->expr()->eq("t.vendor", "'".$vendor."'"),
+						$qb->expr()->eq("t.name", "'".$name."'")
+				));
+			$q = $qb->getQuery();
+			$result = $q->getArrayResult();
+			if (count($result) == 0){
+				return new Response("Template from vendor ". $vendor." with name ". $name." is not installed", 424);
+			}
 			$json = json_encode($result);
 
 			if($json == NULL){
@@ -63,7 +88,12 @@ class TemplateResource
 		/**
 		 * Install new template
 		 */
-		$this->rest->post('/template', function(Request $request) use($em){ 
+		$this->rest->post('/template', function(Request $request) use($em, $app){
+			if (!Helper::isAdminLogged($app)){
+				$r = new Response("Access denied", 403);
+				return $r;
+			}
+			
 			$msg = $request->getContent();
 			$template = json_decode($msg);
 			if (!$template){

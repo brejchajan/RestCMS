@@ -18,7 +18,28 @@ var Flower = function(callback, templateVendor, templateName, defaultLanguage){
 	window.permission = null;
 	window.state = null;
 	this._mainComponent = null;
+	Flower._templateInstalled = true;
+
+	//create template resource
+	Flower._resource = new Resource(Flower.resourceError, Flower.resourceSuccess, "template", "template", "sampleurl", ["name", "vendor", "installed", "id"]);
+	Flower._templateUrlBuilder = new TemplateUrlBuilder(templateVendor, templateName);
+	Flower._resource.setUrlBuilder(Flower._templateUrlBuilder);
+	//check if this template is installed
+	Flower._resource.getAllResources(function(res){}, true);
+
 };
+
+Flower.resourceError = function(e){
+	if (e.status == 424){
+		//template not installed
+		alert(_("This template is not installed. Please login with google account that has ADMIN rights and this template will be installed automatically."));
+		Flower._templateInstalled = false;
+	}
+}
+
+Flower.resourceSuccess = function(){
+	
+}
 
 Flower.initPage = function(){
 	$('#gDisconnect').click(Flower.logout.bind(this));
@@ -118,7 +139,23 @@ Flower.connectServer = function(){
 
 Flower.doLogin = function(response){
 	window.state = response.state;
-	alert(window.state);
+	
+	//install template if needed
+	if(!Flower._templateInstalled){
+		var data = {vendor: window.templateVendor, name: window.templateName};
+		Flower._resource.addResource(data, (function(){
+			window.location.reload();
+		}).bind(this), true);
+	}
+	else{
+		Flower.callOnloginCallback(response);
+	}
+	
+	
+}
+
+Flower.callOnloginCallback = function(response){
+	//call onlogin callback
 	this._mainComponent.onLogin(response);
 	$('#gConnect').hide('slow');
 	$('#gDisconnect').show('slow');
