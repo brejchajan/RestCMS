@@ -30,7 +30,6 @@ class RestCms{
 		$this->googleClient = $googleClient;
 		$this->googlePlus = $googlePlus;
 		
-		
 		$this->rest->register(new Silex\Provider\TwigServiceProvider(), array(
 			'twig.path' => __DIR__,
 		));

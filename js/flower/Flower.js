@@ -139,7 +139,6 @@ Flower.connectServer = function(){
 
 Flower.doLogin = function(response){
 	window.state = response.state;
-	
 	//install template if needed
 	if(!Flower._templateInstalled){
 		var data = {vendor: window.templateVendor, name: window.templateName};
@@ -159,6 +158,12 @@ Flower.callOnloginCallback = function(response){
 	this._mainComponent.onLogin(response);
 	$('#gConnect').hide('slow');
 	$('#gDisconnect').show('slow');
+	document.getElementById('userEmail').innerHTML = response.email;
+	var role = "";
+	if (response.permission == "ADMIN")
+		role = _("Administrator");
+	else role = _("Normal user");
+	document.getElementById('userRole').innerHTML = role;
 }
 
 Flower.doLogout = function(){

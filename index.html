@@ -97,7 +97,7 @@
         
         <div id="gConnect">
 			<button class="g-signin"
-				data-scope="https://www.googleapis.com/auth/plus.login"
+				data-scope="https://www.googleapis.com/auth/plus.login email"
 				data-requestvisibleactions="http://schemas.google.com/AddActivity"
 				data-clientId="965352633379-tpurhtet0fuvffit4bi2epdsh47p1tos.apps.googleusercontent.com"
 				data-accesstype="offline"
@@ -106,7 +106,10 @@
 				data-cookiepolicy="single_host_origin">
 			</button>
 	    </div>
-		<button id="gDisconnect">Odhlásit se</button>
+	    <div id="gDisconnect">
+	    	<div>Přihlášen <span id="userEmail"></span>, v roli <span id="userRole"></span>.</div>
+			<button class="btn btn-primary">Odhlásit se</button>
+		</div>
 		
 		</div> <!-- /footer -->
 		<script type="text/javascript">		

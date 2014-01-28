@@ -10,6 +10,7 @@ require_once(PROJECTDIR . "/bootstrap.php");
 require_once(SRCDIR . "/persistence/Template.php");
 require_once(SRCDIR . "/persistence/Component.php");
 require_once(SRCDIR . "/persistence/Article.php");
+require_once(SRCDIR . "/persistence/User.php");
 require_once(SRCDIR . "/Helper.php");
 
 
@@ -57,7 +58,8 @@ class ConnectResource
 				$code = $request->getContent();
 				// Exchange the OAuth 2.0 authorization code for user credentials.
 				$googleClient->authenticate($code);
-				$token = json_decode($googleClient->getAccessToken());
+				$tok = $googleClient->getAccessToken();
+				$token = json_decode($tok);
 				// You can read the Google user ID in the ID token.
 				// "sub" represents the ID token subscriber which in our case
 				// is the user ID. This sample does not use the user ID.
@@ -65,13 +67,42 @@ class ConnectResource
 					->getAttributes();
 				$gplus_id = $attributes["payload"]["sub"];
 
-				//TODO verify permission
-				$permission = "ADMIN";
+				//verify permission
+				//check if the user exists
+				$email = $googlePlus->people->get('me')["emails"][0]["value"];
+				
+				$qb = $em->createQueryBuilder();
+				$qb->select('u')
+					->from('User', 'u')
+					->where("u.email = '".$email."'");
+				$user = $qb->getQuery()->getResult();
+				if (count($user) == 0){
+					//no such user exists, add it
+					//does any user exist?
+					$qb = $em->createQueryBuilder();
+					$qb->select('count(u.id)')
+						->from('User', 'u');
+					$count = $qb->getQuery()->getSingleScalarResult();
+					if ($count == 0){
+						//set permission to admin
+						$permission = User::PERMISSION_ADMIN;
+					}
+					else{
+						$permission = User::PERMISSION_USER;
+					}
+					//create new user with given permission
+					$user = new User($permission, $email);
+					$em->persist($user);
+					$em->flush();
+				}
+				else{
+					$permission = $user[0]->getPermission();
+				}
 				
 				// Store the token in the session for later use.
 				$app['session']->set('token', json_encode($token));
 				$app['session']->set('permission', $permission);
-				$response = array("state" => $state, "permission" => $permission);
+				$response = array("state" => $state, "permission" => $permission, "email" => $email);
 				return new Response(json_encode($response), 200);
 			}
 			return new Response("Unable to verify login at Google. Try again later.", 522);

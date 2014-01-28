@@ -249,18 +249,20 @@ Resource.prototype.updateState = function(res){
 	}
 }
 
-Resource.prototype.removeResource = function(row){
-    if (this.urlBuilder !== null){
-        this.url = this.urlBuilder.post();
-    }
+Resource.prototype.removeResource = function(url){
+	if (url == null){
+		if (this.urlBuilder !== null){
+			this.url = this.urlBuilder.post();
+		}
+	}
+	else this.url = url;
     jQuery.ajax({
-				url: this.url + row.id,
+				url: this.url,
 				type: "DELETE",
 				contentType: "application/json; charset=utf-8",
 				success: (function(res, status, req){
 						  this.updateState(req);
 						  this.successHandler(this.resourceName + " deleted successfully.");
-						  this.listAllResources();
 						  }).bind(this),
 				error: (function(XMLHttpRequest, textStatus, errorThrown) {
 						this.errorHandler(XMLHttpRequest);

@@ -1,4 +1,5 @@
 <?php
+require_once(SRCDIR . "/persistence/User.php");
 
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;

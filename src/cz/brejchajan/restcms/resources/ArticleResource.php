@@ -143,6 +143,27 @@ class ArticleResource
 			return $r;
 		});
 		
+		/**
+		 * Update article
+		 */
+		$this->rest->delete('/article/{id}', function($id) use($em, $app){
+		
+			if (!Helper::isAdminLogged($app)){
+				$r = new Response("Access denied", 403);
+				return $r;
+			}
+			$article = $em->find('Article', $id);
+			if ($article == NULL){
+				$r = new Response("This article does not exist.", 400);
+				return $r;
+			}
+		
+			$em->remove($article);
+			$em->flush();
+			$r = new Response("Article deleted.", 200);
+			return $r;
+		});
+		
 	}
 
 }

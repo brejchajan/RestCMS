@@ -84,6 +84,7 @@ ArticleComponent.prototype.buildComponent = function(){
 	
 	this._addArticleButton = document.createElement("input");
 	this._addArticleButton.type = "button";
+	this._addArticleButton.className = "btn btn-success";
 	this._addArticleButton.value = _("Add article");
 	this._addArticleButton.addEventListener("click", this.createNewArticle.bind(this), false);
 	if (!(this._loginPrefs != null && this._loginPrefs.permission == "ADMIN")){
@@ -233,7 +234,13 @@ ArticleComponent.prototype.unregisterDrag = function(tag){
 
 ArticleComponent.prototype.updateSeq = function(){
 	var article = this._firstArticle;
-	var seq = this._firstSeq;
+	var seq = 0;
+	while(article != null){
+		seq++;
+		//update article
+		article = article.nextSibling;
+	}
+	article = this._firstArticle;
 	while(article != null){
 		//find article text input component
 		for (var key in this._articles){
@@ -365,49 +372,53 @@ ArticleComponent.prototype.sortArticles = function(a1, a2){
 */
 ArticleComponent.prototype.buildArticleToolBar = function(textInput, articleDiv, articleTag){
 	var toolBar = document.createElement("div");
-	toolBar.className = "articleToolBar";
+	toolBar.className = "btn-group";
+	toolBar.setAttribute("data-name", "articleToolBar");
 
-	var toolBarEditBox = document.createElement("span");
-	toolBarEditBox.className = "articleToolBarEditBox";
-	var toolBarEditLink = document.createElement("a");
-	toolBarEditLink.href = "";
+	//var toolBarEditBox = document.createElement("span");
+	//toolBarEditBox.className = "articleToolBarEditBox";
+	var toolBarEditLink = document.createElement("button");
+	toolBarEditLink.setAttribute("type", "button");
+	toolBarEditLink.className = "btn btn-primary btn-xs";
 	toolBarEditLink.innerHTML = _("Edit");
 	toolBarEditLink.addEventListener("click", textInput.showInputUIEventProxy.bind(textInput), false);
-	toolBarEditBox.appendChild(toolBarEditLink);
+	//toolBarEditBox.appendChild(toolBarEditLink);
 
-	var toolBarDeleteBox = document.createElement("span");
-	toolBarDeleteBox.className = "articleToolBarDeleteBox";
-	var toolBarDeleteLink = document.createElement("a");
-	toolBarDeleteLink.href = "";
+	//var toolBarDeleteBox = document.createElement("span");
+	//toolBarDeleteBox.className = "articleToolBarDeleteBox";
+	var toolBarDeleteLink = document.createElement("button");
+	toolBarDeleteLink.setAttribute("type", "button");
+	toolBarDeleteLink.className = "btn btn-primary btn-xs";
 	toolBarDeleteLink.innerHTML = _("Delete");
 	toolBarDeleteLink.addEventListener("click", function(e){
 		e.preventDefault();
 		textInput.hideInputUI();
+		textInput.deleteResource();
 		articleTag.removeChild(articleDiv);
 		articleTag.removeChild(toolBar);
 	}.bind(this), false);
-	toolBarDeleteBox.appendChild(toolBarDeleteLink);
+	//toolBarDeleteBox.appendChild(toolBarDeleteLink);
 
-	toolBar.appendChild(toolBarEditBox);
-	toolBar.appendChild(toolBarDeleteBox);
+	toolBar.appendChild(toolBarEditLink);
+	toolBar.appendChild(toolBarDeleteLink);
 	return toolBar;
 };
 
 ArticleComponent.prototype.onLogin = function(loginPrefs){
+	this._loginPrefs = loginPrefs;
 	if (loginPrefs.permission == "ADMIN"){
 		$(this._addArticleButton).show('slow');
-	}
-	this._loginPrefs = loginPrefs;
-	//show toolbars of all articles
-	var article = this._firstArticle;
-	while(article != null){
-		var toolBar = $(article).find(".articleToolBar");
-		$(toolBar).show('slow');
-		//make article list linear (remove class name of article children)
-		article.setAttribute('data-class', article.className);
-		article.className = "";
-		//update article
-		article = article.nextSibling;
+		//show toolbars of all articles
+		var article = this._firstArticle;
+		while(article != null){
+			var toolBar = $(article).find("[data-name=articleToolBar]");
+			$(toolBar).show('slow');
+			//make article list linear (remove class name of article children)
+			article.setAttribute('data-class', article.className);
+			article.className = "";
+			//update article
+			article = article.nextSibling;
+		}
 	}
 }
 
@@ -419,7 +430,7 @@ ArticleComponent.prototype.onLogout = function(){
 	//hide toolbars of all articles
 	var article = this._firstArticle;
 	while(article != null){
-		var toolBar = $(article).find(".articleToolBar");
+		var toolBar = $(article).find("[data-name=articleToolBar]");
 		$(toolBar).hide('slow');
 		//set the classname of articles back
 		article.className = article.getAttribute('data-class');

@@ -40,7 +40,7 @@ $client->setApplicationName(APPLICATION_NAME);
 $client->setClientId(CLIENT_ID);
 $client->setClientSecret(CLIENT_SECRET);
 $client->setRedirectUri('postmessage');
+//$client->setScopes(array('https://www.googleapis.com/auth/userinfo.email'));
 
 $plus = new Google_PlusService($client);
-
 ?>

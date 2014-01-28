@@ -100,6 +100,10 @@ TextInputComponent.prototype.doneBtnClicked = function(){
 	this.hideInputUI();
 }
 
+TextInputComponent.prototype.deleteResource = function(){
+	this._resource.removeResource(this._resourceUrl);
+}
+
 TextInputComponent.prototype.updateResource = function(seq, dirty){
 	//update resource
 	var prevSeq = this.getSeq();
