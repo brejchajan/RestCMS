@@ -69,7 +69,7 @@ class ConnectResource
 
 				//verify permission
 				//check if the user exists
-				$email = $googlePlus->people->get('me')["emails"][0]["value"];
+				$email = ((($googlePlus->people->get('me'))["emails"])[0])["value"];
 				
 				$qb = $em->createQueryBuilder();
 				$qb->select('u')
