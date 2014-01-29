@@ -21,6 +21,9 @@
 				var article = new ArticleComponent("articles");
 				article.attachToDataComponent("articles");
 				
+				var pageHeader = new ArticleComponent("pageHeader");
+				pageHeader.attachToDataComponent("pageHeader");
+				
 				//var leftSidebar = new ArticleComponent("leftSidebar");
 				//leftSidebar.attachToClass("leftSidebar");
 				
@@ -34,6 +37,7 @@
 				//main.addPage("contact");
 				main.registerPageComponent(article);
 				main.registerPageComponent(jumbotron);
+				main.registerPageComponent(pageHeader);
 				main.setIndexPage("home", "home");
 				
 				Flower.setMainComponent(main);
@@ -84,9 +88,8 @@
 		  </div>
 		  <div id="about">
 			  <div class="content">
-				  <div class="starter-template">
-					<div class="articles" data-component="articles"></div>
-				  </div>
+				  <div class="page-header" data-component="pageHeader"></div>
+				  <div class="articles" data-component="articles"></div>
 			  </div>
 		  </div>
 	  </div>
