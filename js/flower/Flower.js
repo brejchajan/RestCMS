@@ -17,7 +17,7 @@ var Flower = function(callback, templateVendor, templateName, defaultLanguage){
 	Flower.setDefaultLanguage(defaultLanguage);
 	window.permission = null;
 	window.state = null;
-	this._mainComponent = null;
+	Flower._mainComponent = null;
 	Flower._templateInstalled = true;
 
 	//create template resource
@@ -155,7 +155,7 @@ Flower.doLogin = function(response){
 
 Flower.callOnloginCallback = function(response){
 	//call onlogin callback
-	this._mainComponent.onLogin(response);
+	Flower._mainComponent.onLogin(response);
 	$('#gConnect').hide('slow');
 	$('#gDisconnect').show('slow');
 	document.getElementById('userEmail').innerHTML = response.email;
@@ -170,7 +170,7 @@ Flower.doLogout = function(){
 	$('#gConnect').show('slow');
 	$('#gDisconnect').hide('slow');
 	
-	this._mainComponent.onLogout();
+	Flower._mainComponent.onLogout();
 }
 
 Flower.logout = function(){
@@ -188,5 +188,15 @@ Flower.logout = function(){
  Registers main component to handle login/logout or other system events
  */
 Flower.setMainComponent = function(mainComponent){
-	this._mainComponent = mainComponent;
+	Flower._mainComponent = mainComponent;
+	if (Flower.dipatchHashEvents == true){
+		Flower.mainComponent.registerHashEventListeners();
+	}
+}
+
+Flower.dispatchRegisterHashEventListeners = function(){
+	if (Flower._mainComponent != null){
+		Flower._mainComponent.registerHashEventListeners();
+	}
+	else Flower.dipatchHashEvents = true;
 }

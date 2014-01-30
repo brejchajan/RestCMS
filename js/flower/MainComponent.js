@@ -15,9 +15,11 @@ var MainComponent = function(){
 	this._currentPageId = null;
 	this._pageComponents = [];
 	this._loginPrefs = null;
+	this._registeredHashEventListeners = [];
 	
 	//init functions
 	this.registerHashEventListeners();
+	window.mainComponent = this;
 };
 
 /**
@@ -30,8 +32,21 @@ MainComponent.prototype.registerHashEventListeners = function(){
 	var links = document.querySelectorAll("a[href^='#']");
 	for (var i = 0; i < links.length; i++){
 		var link = links[i];
-		link.addEventListener('click', this.hashLinkClicked.bind(this), true);
+		if (!this.isLinkRegistered(link)){
+			link.addEventListener('click', this.hashLinkClicked.bind(this), false);
+			this._registeredHashEventListeners.push(link);
+		}
 	}
+}
+
+MainComponent.prototype.isLinkRegistered = function(link){
+	for (var key in this._registeredHashEventListeners){
+		var rlink = this._registeredHashEventListeners[key];
+		if (link == rlink){
+			return true;
+		}
+	}
+	return false;
 }
 
 MainComponent.prototype.hashLinkClicked = function(e){

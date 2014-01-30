@@ -17,4 +17,6 @@ var Translation = function(){
 	Flower.addTranslation(["This template is not installed. Please login with google account that has ADMIN rights and this template will be installed automatically.", "Tento template není nainstalován. Prosím, přihlašte se s google účtem, který má práva ADMIN a tento template bude nainstalován automaticky."]);
 	Flower.addTranslation(["Administrator", "Administrátor"]);
 	Flower.addTranslation(["Normal user", "Běžný uživatel"]);
+	Flower.addTranslation(["Link", "Odkaz"]);
+	Flower.addTranslation(["Type name of template to be used with this link", "Zadejte název template, který bude použit pro tento odkaz"]);
 };

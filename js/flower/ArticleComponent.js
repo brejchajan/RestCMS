@@ -36,6 +36,7 @@ ArticleComponent.prototype.loadArticlesCallback = function(data){
 		var article = articles[key];
 		this.createNewArticle(article);
 	}
+	Flower.dispatchRegisterHashEventListeners();
 };
 
 ArticleComponent.prototype.isAdminLogged = function(){
@@ -179,7 +180,12 @@ ArticleComponent.prototype.createTextInputComponent = function(resourceUrl, arti
 };
 
 ArticleComponent.prototype.setDraggable = function(article){
-	article.addEventListener("mousedown", (function(e){this.registerDrag(article);}).bind(this), false);
+	article.addEventListener("mousedown", (function(e){
+										   clearTimeout(this._longPressTimer);
+										   this._longPressTimer = setTimeout((function(){
+																				this.registerDrag(article);
+																			  }).bind(this), 200);
+										   }).bind(this), true);
 	article.addEventListener("mouseup", this.unregisterDrag.bind(this), false);
 };
 
@@ -201,10 +207,8 @@ ArticleComponent.prototype.registerDrag = function(tag){
 			var text = _("Drag this article to a new position between articles.");
 			if (articleDiv.innerHTML != text){
 				this._dragElementContent = articleDiv.innerHTML;
-				this._longPressTimer = setTimeout((function(){
-					//change the drag element content to the advice what to do when dragging
-					articleDiv.innerHTML = text;
-				}).bind(this), 200);
+				//change the drag element content to the advice what to do when dragging
+				articleDiv.innerHTML = text;
 			}
 		}
 	}
@@ -213,23 +217,26 @@ ArticleComponent.prototype.registerDrag = function(tag){
 
 ArticleComponent.prototype.unregisterDrag = function(tag){
 	//eventually stop long press timeout
-	clearTimeout(this._longPressTimer);
-	this._longPressTimer = null;
-	//finish editting DOM
-	this._dragElement.style.position = "relative";
-	this._dragElement.style.top = "0px";
-	this._dragElement.style.left = "0px";
-	this.updateComponentDOM();
-	this.animateBack(0);
-	
-	//return the former content of the article
-	var articleDiv = this._dragElement.firstChild.nextSibling;
-	articleDiv.innerHTML = this._dragElementContent;
-	this._dragElementContent = null;
-	
-	this._dragElement = null;
+		clearTimeout(this._longPressTimer);
+		this._longPressTimer = null;
+	if (this._dragElement != null){
+		//finish editting DOM
+		this._dragElement.style.position = "relative";
+		this._dragElement.style.top = "0px";
+		this._dragElement.style.left = "0px";
+		this.updateComponentDOM();
+		this.animateBack(0);
+		
+		//return the former content of the article
+		var articleDiv = this._dragElement.firstChild.nextSibling;
+		articleDiv.innerHTML = this._dragElementContent;
+		this._dragElementContent = null;
+		
+		this._dragElement = null;
+	}
 	
 	this.updateSeq();
+	Flower.dispatchRegisterHashEventListeners();
 };
 
 ArticleComponent.prototype.updateSeq = function(){

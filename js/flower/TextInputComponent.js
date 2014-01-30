@@ -15,6 +15,7 @@ TextInputComponent.prototype.buildComponent = function(){
 	this.buildBold();
 	this.buildItalic();
 	this.buildUnderline();
+	this.buildAddLink();
 	this.buildHeadings();
 	this.buildTextarea();
 	this.buildDoneButton();
@@ -54,6 +55,16 @@ TextInputComponent.prototype.buildUnderline = function(){
 	this._underline.innerHTML = _("U");
 	this._underline.addEventListener("click", this.underline.bind(this), false);
 };
+
+TextInputComponent.prototype.buildAddLink = function(){
+	this._addLink = document.createElement("a");
+	this._addLink.href = "";
+	this._addLink.title = _("Link");
+	this._addLink.className = "deselected";
+	this._addLink.innerHTML = _("Link");
+	this._addLink.addEventListener("click", this.addLink.bind(this), false);
+};
+
 
 TextInputComponent.prototype.buildHeadings = function(){
 	this._headings = document.createElement("select");
@@ -140,6 +151,7 @@ TextInputComponent.prototype.hideInputUI = function(){
 		this._parent.parentNode.removeChild(this._doneButton);
 		this._parent.parentNode.removeChild(this._textarea);
 		this._parent.parentNode.removeChild(this._headings);
+		this._parent.parentNode.removeChild(this._addLink);
 		this._parent.parentNode.removeChild(this._underline);
 		this._parent.parentNode.removeChild(this._italic);
 		this._parent.parentNode.removeChild(this._bold);
@@ -152,6 +164,7 @@ TextInputComponent.prototype.showInputUI = function(){
 		this._parent.parentNode.insertBefore(this._textarea, this._parent.nextSibling);
 		this._parent.parentNode.insertBefore(this._doneButton, this._parent.nextSibling.nextSibling);
 		this._parent.parentNode.insertBefore(this._headings, this._parent.nextSibling);
+		this._parent.parentNode.insertBefore(this._addLink, this._parent.nextSibling);
 		this._parent.parentNode.insertBefore(this._underline, this._parent.nextSibling);
 		this._parent.parentNode.insertBefore(this._italic, this._parent.nextSibling);
 		this._parent.parentNode.insertBefore(this._bold, this._parent.nextSibling);
@@ -205,6 +218,74 @@ TextInputComponent.prototype.underline = function(e){
 	document.execCommand("underline", false, null);
 	this._textarea.designMode = "Off";
 };
+
+TextInputComponent.prototype.addLink = function(e){
+	e.preventDefault();
+	this._textarea.designMode = "On";
+	this._textarea.focus();
+	var link = this.getSelection();
+	var linkStr = link.toString();
+	if (linkStr.length == 0){
+		return;
+	}
+	if (linkStr[0] == '#'){
+		//local link
+		var text = link.focusNode.textContent;
+		var ch = '';
+		var i = 0;
+		while(ch != '#'){
+			ch = text[i];
+			i++;
+		}
+		//extend the selection
+		document.getSelection().extend(link.focusNode, i);
+	}
+	else{
+		//external link
+		
+	}
+	document.execCommand("createLink", false, linkStr);
+	if (linkStr[0] == '#'){
+		var a = link.focusNode.parentNode;
+		//set data attribute for local link
+		a.setAttribute("data-toggle", "popover");
+		a.setAttribute("data-pacement", "top");
+		a.setAttribute("data-html", "true");
+		a.setAttribute("data-container", "body");
+		a.setAttribute("data-content", "<input id='restcmstemplatename' type='text' value=''/><button id='restcmssettemplate' type='button' value='OK'>OK</button>");
+		a.setAttribute("data-original-title", _("Type name of template to be used with this link"));
+		//postprocess the link
+		var newLink = link.anchorNode.textContent.split('#');
+		document.getSelection().anchorNode.textContent = newLink[0] + newLink[1];
+		//register event listener
+		$(a).popover('show');
+		var button = document.getElementById("restcmssettemplate");
+		button.addEventListener("click", (function(e){
+			//obtain the text
+			var template = '';
+			var inputs = document.querySelectorAll("#restcmstemplatename");
+			var count = inputs.length;
+			for (var key in inputs){
+				var input = inputs[key];
+				if (input.value.length > 0){
+					template = input.value;
+					break;
+				}
+			}
+			a.setAttribute('data-use-template', template);
+			$(a).popover('hide');
+			this.turnOffDesignMode();
+		}).bind(this), true);
+	}
+	else{
+		this.turnOffDesignMode;
+	}
+	//turn design mode off
+};
+
+TextInputComponent.turnOffDesignMode = function(){
+	this._textarea.designMode = "Off";
+}
 
 TextInputComponent.prototype.headings = function(e){
 	e.preventDefault();
