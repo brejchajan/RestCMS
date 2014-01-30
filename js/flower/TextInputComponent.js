@@ -266,8 +266,12 @@ TextInputComponent.prototype.addLink = function(e){
 		a.setAttribute("data-content", "<input id='restcmstemplatename' type='text' value=''/><button id='restcmssettemplate' type='button' value='OK'>OK</button>");
 		a.setAttribute("data-original-title", _("Type name of template to be used with this link"));
 		//postprocess the link
-		var newLink = link.anchorNode.textContent.split('#');
-		document.getSelection().anchorNode.textContent = newLink[0];
+		var newLink = link.focusNode.textContent.split('#');
+		var part2 = newLink[1];
+		if (part2 == null || part2 == undefined){
+			part2 = '';
+		}
+		document.getSelection().focusNode.textContent = newLink[0] + part2;
 		//register event listener
 		$(a).popover('show');
 		var button = document.getElementById("restcmssettemplate");
