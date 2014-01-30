@@ -106,6 +106,7 @@ TextInputComponent.prototype.buildDoneButton = function(){
 };
 
 TextInputComponent.prototype.doneBtnClicked = function(){
+	this.updateParent();
 	this.updateResource(null, true);
 	//manage UI
 	this.hideInputUI();
@@ -199,6 +200,7 @@ TextInputComponent.prototype.bold = function(e){
 	this._textarea.focus();
 	document.execCommand("bold", false, null);
 	this._textarea.designMode = "Off";
+	this.updateParent();
 };
 
 TextInputComponent.prototype.italic = function(e){
@@ -208,6 +210,7 @@ TextInputComponent.prototype.italic = function(e){
 	this._textarea.focus();
 	document.execCommand("italic", false, null);
 	this._textarea.designMode = "Off";
+	this.updateParent();
 };
 
 TextInputComponent.prototype.underline = function(e){
@@ -217,6 +220,7 @@ TextInputComponent.prototype.underline = function(e){
 	this._textarea.focus();
 	document.execCommand("underline", false, null);
 	this._textarea.designMode = "Off";
+	this.updateParent();
 };
 
 TextInputComponent.prototype.addLink = function(e){
@@ -237,12 +241,19 @@ TextInputComponent.prototype.addLink = function(e){
 			ch = text[i];
 			i++;
 		}
-		//extend the selection
-		document.getSelection().extend(link.focusNode, i);
+		//create new selection without hashtag
+		var sel = self.getSelection();
+		var range = document.createRange();
+		range.setStart(sel.focusNode, 1);
+		range.setEnd(sel.focusNode, sel.focusNode.textContent.length);
+		sel.removeAllRanges();
+		sel.addRange(range);
 	}
 	else{
 		//external link
-		
+		if (linkStr.indexOf('http://') == -1){
+			linkStr = 'http://' + linkStr;
+		}
 	}
 	document.execCommand("createLink", false, linkStr);
 	if (linkStr[0] == '#'){
@@ -256,34 +267,28 @@ TextInputComponent.prototype.addLink = function(e){
 		a.setAttribute("data-original-title", _("Type name of template to be used with this link"));
 		//postprocess the link
 		var newLink = link.anchorNode.textContent.split('#');
-		document.getSelection().anchorNode.textContent = newLink[0] + newLink[1];
+		document.getSelection().anchorNode.textContent = newLink[0];
 		//register event listener
 		$(a).popover('show');
 		var button = document.getElementById("restcmssettemplate");
 		button.addEventListener("click", (function(e){
 			//obtain the text
-			var template = '';
-			var inputs = document.querySelectorAll("#restcmstemplatename");
-			var count = inputs.length;
-			for (var key in inputs){
-				var input = inputs[key];
-				if (input.value.length > 0){
-					template = input.value;
-					break;
-				}
-			}
+			var input = document.querySelector("#restcmstemplatename");
+			var template = input.value;
 			a.setAttribute('data-use-template', template);
 			$(a).popover('hide');
 			this.turnOffDesignMode();
+			this.updateParent();
 		}).bind(this), true);
 	}
 	else{
-		this.turnOffDesignMode;
+		this.turnOffDesignMode();
+		this.updateParent();
 	}
 	//turn design mode off
 };
 
-TextInputComponent.turnOffDesignMode = function(){
+TextInputComponent.prototype.turnOffDesignMode = function(){
 	this._textarea.designMode = "Off";
 }
 
@@ -293,7 +298,8 @@ TextInputComponent.prototype.headings = function(e){
 	this._textarea.designMode = "On";
 	this._textarea.focus();
 	document.execCommand("formatBlock", false, value);
-	this._textarea.designMode = "Off";	
+	this._textarea.designMode = "Off";
+	this.updateParent();
 };
 
 TextInputComponent.prototype.setToggle = function(element){
