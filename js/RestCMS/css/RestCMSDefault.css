@@ -1,9 +1,9 @@
 /* 
-	FACTORY STYLE FOR FLOWER COMPONENTS
+	FACTORY STYLE FOR RestCMS COMPONENTS
 	DO NOT EDIT UNLESS YOU REALLY KNOW WHAT YOU ARE DOING.
 */
 
-#flowerTextEditor {
+#RestCMSTextEditor {
 	min-height: 100px;
 	border-style: solid;
 	border-width: 1px;

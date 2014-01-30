@@ -8,14 +8,14 @@
 		<!-- Bootstrap justified enhancement (can be removed, you can use any stylesheet) -->
 		<link href="/templates/default/css/justified.css" rel="stylesheet">
 		<!-- RestCMS css (DO NOT REMOVE) -->
-		<link rel="stylesheet" type="text/css" href="../../js/flower/css/flowerDefault.css" />
+		<link rel="stylesheet" type="text/css" href="../../js/RestCMS/css/RestCMSDefault.css" />
 		
 		<title>RestCMS</title>
 		<!-- JQUERY (jQuery is needed for RestCMS and Bootstrap as dependency, DO NOT REMOVE!)-->
 		<script src="/js/jquery/jquery.js" type="text/javascript"></script>
 		<script src="/js/bootstrap/dist/js/bootstrap.min.js" type="text/javascript"></script>
 		<!-- RestCMS system javascript (DO NOT REMOVE) -->
-		<script src="/js/flower/flowercompiled.js" type="text/javascript"></script>
+		<script src="/js/RestCMS/RestCMScompiled.js" type="text/javascript"></script>
 		<!-- RestCMS initialization code (can be altered) -->
 		<script type="text/javascript">
 			var run = function(){				
@@ -41,10 +41,10 @@
 				main.registerPageComponent(pageHeader);
 				main.setIndexPage("home", "home");
 				
-				Flower.setMainComponent(main);
+				RestCMS.setMainComponent(main);
 				//leftSidebar.buildComponent();
 			}
-			var engine = new Flower(run, "brejchajan", "default", "cz");
+			var engine = new RestCMS(run, "brejchajan", "default", "cz");
 		</script>
 		<!-- Google API - DO NOT REMOVE, needed for login! -->
 		<script type="text/javascript">
@@ -118,7 +118,7 @@
 		</div> <!-- /footer -->
 		<script type="text/javascript">		
 			function onSignInCallback(authResult) {
-			  	Flower.onSignInCallback(authResult);
+			  	RestCMS.onSignInCallback(authResult);
 			}
 		</script>
     </div> <!-- /container -->

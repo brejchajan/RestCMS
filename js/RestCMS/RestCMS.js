@@ -4,45 +4,45 @@
 	free to use and redistribute
 */
 /**
-	Flower system constructor.
-	Registers onLoad event listener to start the Flower system
+	RestCMS system constructor.
+	Registers onLoad event listener to start the RestCMS system
 	@param callback - user callback function that initializes components on the page
 */
-var Flower = function(callback, templateVendor, templateName, defaultLanguage){
+var RestCMS = function(callback, templateVendor, templateName, defaultLanguage){
 	window.templateName = templateName;
 	window.templateVendor = templateVendor;
 	addEventListener("load", callback, false);
-	addEventListener("load", Flower.initPage.bind(this), false);
-	Flower.initLanguages();
-	Flower.setDefaultLanguage(defaultLanguage);
+	addEventListener("load", RestCMS.initPage.bind(this), false);
+	RestCMS.initLanguages();
+	RestCMS.setDefaultLanguage(defaultLanguage);
 	window.permission = null;
 	window.state = null;
-	Flower._mainComponent = null;
-	Flower._templateInstalled = true;
+	RestCMS._mainComponent = null;
+	RestCMS._templateInstalled = true;
 
 	//create template resource
-	Flower._resource = new Resource(Flower.resourceError, Flower.resourceSuccess, "template", "template", "sampleurl", ["name", "vendor", "installed", "id"]);
-	Flower._templateUrlBuilder = new TemplateUrlBuilder(templateVendor, templateName);
-	Flower._resource.setUrlBuilder(Flower._templateUrlBuilder);
+	RestCMS._resource = new Resource(RestCMS.resourceError, RestCMS.resourceSuccess, "template", "template", "sampleurl", ["name", "vendor", "installed", "id"]);
+	RestCMS._templateUrlBuilder = new TemplateUrlBuilder(templateVendor, templateName);
+	RestCMS._resource.setUrlBuilder(RestCMS._templateUrlBuilder);
 	//check if this template is installed
-	Flower._resource.getAllResources(function(res){}, true);
+	RestCMS._resource.getAllResources(function(res){}, true);
 
 };
 
-Flower.resourceError = function(e){
+RestCMS.resourceError = function(e){
 	if (e.status == 424){
 		//template not installed
 		alert(_("This template is not installed. Please login with google account that has ADMIN rights and this template will be installed automatically."));
-		Flower._templateInstalled = false;
+		RestCMS._templateInstalled = false;
 	}
 }
 
-Flower.resourceSuccess = function(){
+RestCMS.resourceSuccess = function(){
 	
 }
 
-Flower.initPage = function(){
-	$('#gDisconnect').click(Flower.logout.bind(this));
+RestCMS.initPage = function(){
+	$('#gDisconnect').click(RestCMS.logout.bind(this));
 	$('#gDisconnect').hide();
 }
 
@@ -50,13 +50,13 @@ Flower.initPage = function(){
 	proxy for translate method
 */
 _ = function(text){
-	return Flower.translate(text);
+	return RestCMS.translate(text);
 };
 /**
 	Translates from english to default language
 	@param text - text to be translated.
 */
-Flower.translate = function(text){
+RestCMS.translate = function(text){
 	for (i = 0; i < this._translations.length; i++){
 		if (this._translations[i][0] == text){
 			return this._translations[i][this._defaultLanguage];
@@ -70,7 +70,7 @@ Flower.translate = function(text){
 	sets default language
 	@param language - abbreviation of the desired language
 */
-Flower.setDefaultLanguage = function(language){
+RestCMS.setDefaultLanguage = function(language){
 	//set default language to english if the desired language is not found
 	this._defaultLanguage = 0;
 	//set default language according to the language parameter
@@ -86,13 +86,13 @@ Flower.setDefaultLanguage = function(language){
 	}
 };
 
-Flower.initLanguages = function(){
+RestCMS.initLanguages = function(){
 	this._languages = ["en", "cz"];
 	this._translations = [];
 	new Translation();
 };
 
-Flower.addTranslation = function(translationArray){
+RestCMS.addTranslation = function(translationArray){
 	if (translationArray.length != this._languages.length){
 		alert("ERROR: translation for word " + translationArray[0] + " contains different number of languages than is available.");
 		return;
@@ -100,11 +100,11 @@ Flower.addTranslation = function(translationArray){
 	this._translations[this._translations.length] = translationArray;
 };
 
-Flower.onSignInCallback = function(authResult){
+RestCMS.onSignInCallback = function(authResult){
 	if (authResult['access_token']) {
         // The user is signed in
         this._authResult = authResult;
-        Flower.connectServer();
+        RestCMS.connectServer();
 	} else if (authResult['error']) {
         // There was an error, which means the user is not signed in.
         // As an example, you can troubleshoot by writing to the console:
@@ -115,7 +115,7 @@ Flower.onSignInCallback = function(authResult){
 	}
 }
 
-Flower.connectServer = function(){
+RestCMS.connectServer = function(){
 	$.ajax({
 		   type: 'GET',
 		   url: 'http://' + window.location.host + '/restcms.php/connect',
@@ -128,7 +128,7 @@ Flower.connectServer = function(){
 					  contentType: 'application/octet-stream; charset=utf-8',
 					  success: function(result) {
 							var res = JSON.parse(result);
-							Flower.doLogin(res);
+							RestCMS.doLogin(res);
 					  },
 					  processData: false,
 					  data: this._authResult.code
@@ -137,25 +137,25 @@ Flower.connectServer = function(){
 	});
 }
 
-Flower.doLogin = function(response){
+RestCMS.doLogin = function(response){
 	window.state = response.state;
 	//install template if needed
-	if(!Flower._templateInstalled){
+	if(!RestCMS._templateInstalled){
 		var data = {vendor: window.templateVendor, name: window.templateName};
-		Flower._resource.addResource(data, (function(){
+		RestCMS._resource.addResource(data, (function(){
 			window.location.reload();
 		}).bind(this), true);
 	}
 	else{
-		Flower.callOnloginCallback(response);
+		RestCMS.callOnloginCallback(response);
 	}
 	
 	
 }
 
-Flower.callOnloginCallback = function(response){
+RestCMS.callOnloginCallback = function(response){
 	//call onlogin callback
-	Flower._mainComponent.onLogin(response);
+	RestCMS._mainComponent.onLogin(response);
 	$('#gConnect').hide('slow');
 	$('#gDisconnect').show('slow');
 	document.getElementById('userEmail').innerHTML = response.email;
@@ -166,20 +166,20 @@ Flower.callOnloginCallback = function(response){
 	document.getElementById('userRole').innerHTML = role;
 }
 
-Flower.doLogout = function(){
+RestCMS.doLogout = function(){
 	$('#gConnect').show('slow');
 	$('#gDisconnect').hide('slow');
 	
-	Flower._mainComponent.onLogout();
+	RestCMS._mainComponent.onLogout();
 }
 
-Flower.logout = function(){
+RestCMS.logout = function(){
 	$.ajax({
 		   type: 'DELETE',
 		   url: 'http://' + window.location.host + '/restcms.php/connect?state='+window.state,
 		   contentType: 'application/octet-stream; charset=utf-8',
 		   success: function(result) {
-				Flower.doLogout();
+				RestCMS.doLogout();
 		   }
 	});
 }
@@ -187,16 +187,16 @@ Flower.logout = function(){
 /**
  Registers main component to handle login/logout or other system events
  */
-Flower.setMainComponent = function(mainComponent){
-	Flower._mainComponent = mainComponent;
-	if (Flower.dipatchHashEvents == true){
-		Flower.mainComponent.registerHashEventListeners();
+RestCMS.setMainComponent = function(mainComponent){
+	RestCMS._mainComponent = mainComponent;
+	if (RestCMS.dipatchHashEvents == true){
+		RestCMS.mainComponent.registerHashEventListeners();
 	}
 }
 
-Flower.dispatchRegisterHashEventListeners = function(){
-	if (Flower._mainComponent != null){
-		Flower._mainComponent.registerHashEventListeners();
+RestCMS.dispatchRegisterHashEventListeners = function(){
+	if (RestCMS._mainComponent != null){
+		RestCMS._mainComponent.registerHashEventListeners();
 	}
-	else Flower.dipatchHashEvents = true;
+	else RestCMS.dipatchHashEvents = true;
 }

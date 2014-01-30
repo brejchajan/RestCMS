@@ -5,4 +5,4 @@
 #include "MainComponent.js"
 #include "TextInputComponent.js"
 #include "ArticleComponent.js"
-#include "Flower.js"
+#include "RestCMS.js"

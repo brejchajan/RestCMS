@@ -87,7 +87,7 @@ TextInputComponent.prototype.buildHeadings = function(){
 TextInputComponent.prototype.buildTextarea = function(){
 	this._textarea = document.createElement("div");
 	this._textarea.contentEditable = "true";
-	this._textarea.id = "flowerTextEditor";
+	this._textarea.id = "RestCMSTextEditor";
 	this._textarea.addEventListener("keyup", this.updateParent.bind(this), false);
 	this._textarea.addEventListener("click", this.checkToggleButtons.bind(this), false);
 	this._textarea.addEventListener("keyup", this.checkToggleButtons.bind(this), false);

@@ -36,7 +36,7 @@ ArticleComponent.prototype.loadArticlesCallback = function(data){
 		var article = articles[key];
 		this.createNewArticle(article);
 	}
-	Flower.dispatchRegisterHashEventListeners();
+	RestCMS.dispatchRegisterHashEventListeners();
 };
 
 ArticleComponent.prototype.isAdminLogged = function(){
@@ -236,7 +236,7 @@ ArticleComponent.prototype.unregisterDrag = function(tag){
 	}
 	
 	this.updateSeq();
-	Flower.dispatchRegisterHashEventListeners();
+	RestCMS.dispatchRegisterHashEventListeners();
 };
 
 ArticleComponent.prototype.updateSeq = function(){
