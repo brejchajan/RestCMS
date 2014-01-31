@@ -6,19 +6,44 @@
 
 
 /**
- Constructor for main component
- @param resource		the resource object to persist the data.
+ Main component is component that joins all components together to obtain whole
+ system. Its responsibility is to serve the content according to the current
+ #hash part of the address. #Hash part of the url is the name of section that
+ will be rendered. The data-use-template attribute of the <a> element defines
+ which template will be used to render this section. This implies that tere can
+ be section with one name but it can have more templates and it is up to the
+ link to define which template to use. By the template is meant part of the
+ html source code that defines the section form. Templates are defined in index 
+ html file after element with id=main, which means the main panel on that will
+ be each section rendered.
+ 
+ The main component manages also calling other broadcast callbacks to all (or
+ to some) components that are bound with the main component. Right now onLogin()
+ and onLogout callbacks are implemented, but some more may follow.
  */
 var MainComponent = function(){
+	///name of the component
 	this._componentName = "main";
+	///pages templates
 	this._pages = [];
+	///id of the page that is being rendered
 	this._currentPageId = null;
+	///local components registered to the main component and that will be visible
+	///on some (or all) sections.
 	this._pageComponents = [];
+	///login preferences to define permissions
 	this._loginPrefs = null;
+	/**
+	 * Links (<a> elements) that are registered as hash links. If any link contains
+	 * relative address starting with # (hash), it is registered as hash link in
+	 * registerHashEventListeners(). This makes possible to render appropriate
+	 * section (and hide the rest) when such link is clicked.
+	 */
 	this._registeredHashEventListeners = [];
 	
-	//init functions
+	//register all hash event listeners.
 	this.registerHashEventListeners();
+	//set main component as global variable to be accessible globally.
 	window.mainComponent = this;
 };
 
