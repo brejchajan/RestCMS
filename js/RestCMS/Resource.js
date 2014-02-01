@@ -14,7 +14,6 @@ var Resource = function(_errorHandler, _successHandler, _resourceName, _elementI
     this.order = null;
     this.currentPage = 0;
     this.itemsOnPage = null;
-    this.dataPreprocessor = null;
     this.urlBuilder = null;
     this.displayColName = null;
     this.itemIdName = null;
@@ -40,10 +39,6 @@ Resource.prototype.setItemIdName = function(id){
     this.itemIdName = id;
 };
 
-
-Resource.prototype.setDataPreprocessor = function(prep){
-    this.dataPreprocessor = prep;
-};
 
 Resource.prototype.setOrder = function(order){
     this.order = order;
@@ -82,43 +77,6 @@ Resource.prototype.buildXFilter = function(){
     return null;
 };
 
-/*
- Resource.prototype.listAllResources = function(){
- if (this.urlBuilder !== null){
- this.url = this.urlBuilder.get();
- }
- jQuery.ajax({
- url: this.url,
- type: "GET",
- accept: "application/json; charset=utf-8",
- beforeSend: (function (XMLHttpRequest) {
- //Specifying this header ensures that the results will be returned as JSON.
- var filter = this.buildXFilter();
- if (filter !== null){
- XMLHttpRequest.setRequestHeader("X-Filter", filter);
- }
- if (this.order !== null){
- XMLHttpRequest.setRequestHeader("X-Order", this.order);
- }
- }).bind(this),
- success: (function(res){
- //TODO preprocess JSON data to exchange destination IDs for destination names
- if (this.dataPreprocessor !== null){
- res = this.dataPreprocessor.process(res);
- }
- var resourcesList = document.getElementById(this.elementID);
- if (resourcesList.firstChild !== null){
- resourcesList.removeChild(resourcesList.firstChild);
- }
- document.getElementById(this.elementID).appendChild(this.airport.buildBootstrapTableFromJSON(this.resourceName, res, this.updateResource.bind(this), this.removeResource.bind(this)));
- this.successHandler();
- }).bind(this),
- error: (function(XMLHttpRequest, textStatus, errorThrown) {
- this.errorHandler("Chyba.\n" + textStatus + " " + errorThrown);
- }).bind(this)
- });
- };
- */
 
 Resource.prototype.getAllResources = function(callback, asynchronous){
     if (asynchronous !== false){
