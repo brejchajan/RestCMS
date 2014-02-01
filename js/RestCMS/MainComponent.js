@@ -1,7 +1,22 @@
-/**
- Created by Jan Brejcha 23. 1. 2014.
- this program is licenced under GNU-GPL licence,
- free to use and redistribute
+/*
+ This is a part of project named RestCMS. It is lightweight, extensible and easy to use
+ content management system that stands on the idea that server should serve the
+ content and clients should give the form to that content.
+ 
+ Copyright (C) 2014  Jan Brejcha
+ 
+ This program is free software: you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License, or
+ any later version.
+ 
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+ 
+ You should have received a copy of the GNU General Public License
+ along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 
@@ -129,11 +144,20 @@ MainComponent.prototype.setCurrentPage = function(pageId){
 
 /**
  Registers component that will load specific data on each page separately
+ @param component	component to be registered. (It must be child of Component).
  */
 MainComponent.prototype.registerPageComponent = function(component){
 	this._pageComponents.push(component);
 }
 
+/**
+ Builds the main component. This means that the section that was set as index page or was
+ set as current page will be shown, all other sections will be removed from DOM.
+ All registered components are called to reattach (this will cause that the 
+ components will be added to the newly shown elements of the section in the DOM
+ if aplicable and rebuilt. This will cause that the components will load its 
+ content.
+ */
 MainComponent.prototype.buildComponent = function(){
 	var prefix = (window.location.hash.split("#"))[1];
 	if (prefix == null || prefix == undefined){
@@ -173,6 +197,10 @@ MainComponent.prototype.buildComponent = function(){
 	
 };
 
+/**
+ OnLoginCallback is called when the user logs in. It is called by RestCMS system
+ class. This callback is propagated to all registered page components.
+ */
 MainComponent.prototype.onLogin = function(loginPrefs){
 	this._loginPrefs = loginPrefs;
 	for (var key in this._pageComponents){
@@ -181,6 +209,10 @@ MainComponent.prototype.onLogin = function(loginPrefs){
 	}
 }
 
+/**
+ OnLogoutCallback is called when the user logs in. It is called by RestCMS system
+ class. This callback is propagated to all registered page components.
+ */
 MainComponent.prototype.onLogout = function(){
 	this._loginPrefs = null;
 	for (var key in this._pageComponents){
