@@ -1,25 +1,72 @@
-/**
-	Created by Jan Brejcha 14. 5. 2013.
-	this program is licenced under GNU-GPL licence,
-	free to use and redistribute
-*/
+/*
+ This is a part of project named RestCMS. It is lightweight, extensible and easy to use
+ content management system that stands on the idea that server should serve the
+ content and clients should give the form to that content.
+ 
+ Copyright (C) 2014  Jan Brejcha
+ 
+ This program is free software: you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License, or
+ any later version.
+ 
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+ 
+ You should have received a copy of the GNU General Public License
+ along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 
-
 /**
-	Constructor for article component
-	@param resource		the resource object to persist the data.
+ Article component. Aticle component manages the creation and sorting of
+ articles. It can be (as well as other components) attached to some HTML element
+ to provide the functionality.
+ 
+ The component support following actions with articles:
+	- add new article - the article is added to the DOM and appropriate POST
+						request is made to the RestCMS server.
+	- update the article - article is updated in DOM as well as on the server
+						with appropriate PUT request.
+	- remove the article - article is removed from DOM and from the server by
+						issuing appropriate DELETE request.
+	- sort articles -	the articles can be drag&dropped to the desired postion.
+						the sort is done only in Y direction right now, no support
+						for horizontaly placed components is present yet.
+						The order of the articles is sorted this way, not the 
+						exact XY position.
+						The articles are sorted according the set position and 
+						the update is persisted on the server.
+ 
+ @param componentName	The name of the component. The name is used to persist
+						the component on the server. Therefore the name must not
+						contain any diacritic or spaces.
 */
 var ArticleComponent = function(componentName){
+	/// The name of the component to be stored in the database on the server.
 	this._componentName = componentName;
-	//component name prefix to be able to have separate components on different pages created dynamically.
+	/// Component name prefix defines the current prefix for current page. This way
+	/// it is possible to have one component defined once but used to serve different
+	/// content in different secitons of the web.
 	this.componentNamePrefix = "";
+	/// The element that is being dragged
 	this._dragElement = null;
+	/// The elements that were moved down during animation of drag and drop.
 	this._movedElements = [];
+	/// The count of the articles in this component.
 	this._articleCount = 0;
+	/// The first article element in this component.
 	this._firstArticle = null;
+	/// Content of the element being dragged. While dragging the elements content
+	/// is changed to the hint text what to do. After the drag is finished the
+	/// original content is returned back.
 	this._dragElementContent = null;
+	/// The button for adding new article.
 	this._addArticleButton = null;
+	/// The timer that is fired after the long press to drag the component.
 	this._longPressTimer = null;
+	/// Login preferences that will be stored here after the user is logged in.
 	this._loginPrefs = null;
 };
 
@@ -28,9 +75,14 @@ var ArticleComponent = function(componentName){
 */
 ArticleComponent.prototype = Object.create(Component.prototype);
 
+/**
+ The callback that creates the article elements in DOM after the data from 
+ server were received.
+ @param data	the data object (already parsed from JSON) containing the 
+				articles data.
+ */
 ArticleComponent.prototype.loadArticlesCallback = function(data){
 	this._articles = [];
-	//alert(data);
 	var articles = JSON.parse(data);
 	for (var key in articles){
 		var article = articles[key];
@@ -39,6 +91,11 @@ ArticleComponent.prototype.loadArticlesCallback = function(data){
 	RestCMS.dispatchRegisterHashEventListeners();
 };
 
+/**
+ The method that tests if admin is logged. 
+ @TODO Should be moved to the Component
+ object (the parent) for better reusability of the code
+ */
 ArticleComponent.prototype.isAdminLogged = function(){
 	if (this._loginPrefs != null && this._loginPrefs.permission == "ADMIN"){
 		return true;
@@ -47,12 +104,15 @@ ArticleComponent.prototype.isAdminLogged = function(){
 }
 
 /**
- Resource factory method for articles.
+ Resource factory method for article resource. All UrlBuilders are initialized
+ and assigned to newly created resource.
  */
 ArticleComponent.prototype.createArticleResource = function(){
+	/// Success handler of the resource
 	var successHandler = function(){
-		//alert("success");
+		//No need to inform about success, only errors are treated.
 	}
+	/// Error handler of the resource.
 	var errorHandler = function(e){
 		if (e.status == 424){
 			//if the component was not found
@@ -65,9 +125,13 @@ ArticleComponent.prototype.createArticleResource = function(){
 			}).bind(this), true);
 		}
 	}
+	//the resource
 	var resource = new Resource(errorHandler.bind(this), successHandler, this.componentNamePrefix + this._componentName, this.componentNamePrefix + this._componentName, "sampleurl", ["seq", "text"]);
+	//template url builder
 	this._templateUrlBuilder = new TemplateUrlBuilder(window.templateVendor, window.templateName);
+	//component url builder
 	this._componentUrlBuilder = new ComponentUrlBuilder(this._templateUrlBuilder, this.componentNamePrefix + this._componentName);
+	//article url builder
 	this._articleUrlBuilder = new ArticleUrlBuilder(this._componentUrlBuilder);
 	resource.setUrlBuilder(this._articleUrlBuilder);
 	return resource;
@@ -77,6 +141,9 @@ ArticleComponent.prototype.createArticleResource = function(){
 	@Override 
 	Component builder function.
 	Builds this component.
+	- adds create article button
+	- calls resource factory to create new resource
+	- obtains all existing articles from server.
 */
 ArticleComponent.prototype.buildComponent = function(){
 	this.removeAllArticles();
@@ -99,6 +166,11 @@ ArticleComponent.prototype.buildComponent = function(){
 	this.resource.getAllResources(this.loadArticlesCallback.bind(this), true);
 };
 
+/**
+ Removes all content of this component from the DOM. Should be called before 
+ main component builds the content to avoid the component to be shown several
+ times on a single page.
+ */
 ArticleComponent.prototype.removeAllArticles = function(){
 	if (this._addArticleButton != null){
 		this._parent.removeChild(this._addArticleButton);
@@ -117,7 +189,10 @@ ArticleComponent.prototype.removeAllArticles = function(){
 };
 
 /**
-	Creates new article
+ Creates new article, adds it into DOM and persist it on the server.
+ @param articleData		The article data are used when they was retreived earlier.
+						In this case there is no need to download them again,
+						so only new article element is placed into DOM.
 */
 ArticleComponent.prototype.createNewArticle = function(articleData){
 	if (articleData.text != null){
@@ -138,6 +213,15 @@ ArticleComponent.prototype.createNewArticle = function(articleData){
 	
 };
 
+/**
+ Creates the text input component to be able to add and edit the content of the
+ article.
+ @param resourceUrl		the url of the article to be able to persist the changes 
+						of the component content.
+ @articleData			The article data to assign to the content of the text
+						input component to have both text input and article 
+						component in sync.
+ */
 ArticleComponent.prototype.createTextInputComponent = function(resourceUrl, articleData){
 	//create new resource for particular article
 	var articleResource = this.createArticleResource();
@@ -179,6 +263,14 @@ ArticleComponent.prototype.createTextInputComponent = function(resourceUrl, arti
 	articleTag.insertBefore(toolBar, articleDiv);
 };
 
+
+/**
+ Set the DOM element to be draggable.
+ The component can be dragged if the mouse is holding it for some time (200 ms here).
+ The drag is registered if the mouse is holding the element. After the mouse release
+ the drag is unregistered.
+ @param		article the DOM element to be made draggable.
+ */
 ArticleComponent.prototype.setDraggable = function(article){
 	article.addEventListener("mousedown", (function(e){
 										   clearTimeout(this._longPressTimer);
@@ -189,6 +281,13 @@ ArticleComponent.prototype.setDraggable = function(article){
 	article.addEventListener("mouseup", this.unregisterDrag.bind(this), false);
 };
 
+/**
+ Registers the DOM element to be dragged when mousemove event occurs.
+ The articles can be dragged only by administrator, so the drag is registered only
+ if the ADMIN is logged on.
+ @param		tag		the DOM element to be registered for dragging when mousemove
+					event occurs.
+ */
 ArticleComponent.prototype.registerDrag = function(tag){
 	//only admin can drag and drop articles
 	if (this._loginPrefs != null){
