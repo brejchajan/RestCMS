@@ -52,7 +52,11 @@ var MainComponent = function(){
  */
 MainComponent.prototype = Object.create(Component.prototype);
 
-
+/**
+ Goes through all links that satisfy a[href^='#'] CSS3 selector.
+ If the link is not currently registered, it will register onclick event
+ on the hashLinkClicked() function.
+ */
 MainComponent.prototype.registerHashEventListeners = function(){
 	var links = document.querySelectorAll("a[href^='#']");
 	for (var i = 0; i < links.length; i++){
@@ -64,6 +68,12 @@ MainComponent.prototype.registerHashEventListeners = function(){
 	}
 }
 
+/**
+ Tests the link object if it is registered to hashLonkClicked() function.
+ @param link	the link element to be tested.
+ @return	true if the link element is registered,
+			false otherwise.
+ */
 MainComponent.prototype.isLinkRegistered = function(link){
 	for (var key in this._registeredHashEventListeners){
 		var rlink = this._registeredHashEventListeners[key];
@@ -74,6 +84,9 @@ MainComponent.prototype.isLinkRegistered = function(link){
 	return false;
 }
 
+/**
+ 
+ */
 MainComponent.prototype.hashLinkClicked = function(e){
 	var pageId = e.target.getAttribute('data-use-template');
 	if (pageId != null){
@@ -90,15 +103,25 @@ MainComponent.prototype.hashLinkClicked = function(e){
 MainComponent.prototype.addPage = function(pageId){
 	var pageElement = document.getElementById(pageId);
 	this._pages[pageId] = {parent: pageElement.parentNode, page:pageElement};
-	//alert(this._pages[pageId]);
 };
 
+/**
+ Sets the page that will be displayed after loading the site, or after page reload.
+ @param		templatePageId	id of the template to be used with the hash location
+ @param		pageHref		the name of the section to be used in address after #
+							symbol.
+ */
 MainComponent.prototype.setIndexPage = function(templatePageId, pageHref){
 	window.location.href = (window.location.href.split("#"))[0] + "#" + pageHref;
 	this._currentPageId = templatePageId;
 	this.buildComponent();
 }
 
+/**
+ Changes the current page to the section with the desired pageId. Should be called
+ after the window.location is set to proper address of the section to be displayed.
+ @param pageId		the pageId to be loaded.
+ */
 MainComponent.prototype.setCurrentPage = function(pageId){
 	this._currentPageId = pageId;
 	this.buildComponent();
