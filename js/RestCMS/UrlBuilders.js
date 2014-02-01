@@ -20,29 +20,6 @@
  */
 
 
-var DataPreprocessor = function(resource) {
-    this.data = null;
-    resource.getAllResources(this.setData.bind(this));
-};
-
-DataPreprocessor.prototype.setData = function(data){
-    this.data = data;
-};
-
-
-DataPreprocessor.prototype.find = function(key, value, filterName, json){
-    for (objKey in json){
-        var obj = json[objKey];
-        for (kkey in obj){
-            if ((kkey == key) && (value == obj[kkey])){
-                return obj[filterName];
-            }
-        }
-    }
-    return null;
-};
-
-
 var TemplateUrlBuilder = function(vendor, name){
 	this.vendor = vendor;
 	this.name = name;
