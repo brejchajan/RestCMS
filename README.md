@@ -21,7 +21,7 @@ Stay tuned, the RestCMS is coming.
 Architecture
 ------------------
 The RestCMS system consists of two main parts. The first one is the server implementation, 
-which can be found at {RestCMSDir}/src/cz/brejchajan/restcms. The server is implemented in 
+which can be found at ```{RestCMSDir}/src/cz/brejchajan/restcms```. The server is implemented in 
 php and it is responsible to manage the content data through REST interface. Therefore
 the server can provide only the data with no visual form. The visual form is defined on
 presentaion layer, which is implemented as HTML and JavaScript on client side.
@@ -92,7 +92,7 @@ fileystem. Please, change the settings of your database connection as well.
 
 4) Register new Google app on <a href="https://code.google.com/apis/console">Google apis console</a>.
 If you are not familiar with this, please refer <a href="https://developers.google.com/+/quickstart/javascript">
-google tutorial</a> (just section 1) for google plus sign in. The next steps in the tutorial
+google tutorial</a> (just section 1) for google plus sign in. The next steps of the tutorial
 are implemented in RestCMS.
 
 5) Update the config.php file with the CLIENT_ID and CLIENT_SECRET keys.
