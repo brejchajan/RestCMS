@@ -15,13 +15,13 @@ define ("SRCDIR", PROJECTDIR . "/src/cz/brejchajan/restcms");
 /** Database */
 define("DBNAME", "restcms");
 define("DBUSER", "root");
-define("DBPASSWORD", "brejcha004");
+define("DBPASSWORD", "");
 define("DBHOST", "localhost");
 
 /** Google Plus **/
-const CLIENT_ID = '965352633379-tpurhtet0fuvffit4bi2epdsh47p1tos.apps.googleusercontent.com';
+const CLIENT_ID = '';
 
-const CLIENT_SECRET = 'NqiYLCNeEORqpwsiJTH4A72S';
+const CLIENT_SECRET = '';
 
 const APPLICATION_NAME = "RestCMS";
 
