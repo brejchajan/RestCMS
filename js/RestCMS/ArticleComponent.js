@@ -313,7 +313,13 @@ ArticleComponent.prototype.registerDrag = function(tag){
 	}
 };
 
-
+/**
+ Unregisters drag when the mouseup event above element being dragged occurs.
+ Clears the timer.
+ Sets proper position on the dragged element
+ Updates the sequence numbers of articles (their position)
+ @param tag		the event object.
+ */
 ArticleComponent.prototype.unregisterDrag = function(tag){
 	//eventually stop long press timeout
 		clearTimeout(this._longPressTimer);
