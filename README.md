@@ -40,26 +40,23 @@ The RestCMS JS library provides components to be able to manage the content of t
 Each component is bound with some HTML element into which the content is loaded.
 
 As for now the components ready to use are:
-	- ArticleComponent: 	Component responsible for article management. It can create, edit,
-							delete and sort the articles. For the text input the TextInputComponent
-							is used.
-	- TextInputComponent: This component is in fact rich text editor, with which the text
-							can be edited. It now supports Bold, Italics, Underline, six
-							levels of headings, external links, and internal links. Internal
-							link is link to another section on the web. It starts with # (hash)
-							symbol and is treated as link to the section named the same as 
-							the link is (without the # symbol).
-							In the future we plan to extend this component for drag and drop
-							of images and files that could be added directly to the text, or
-							below the article.
-	- MainComponent: 		This component connect all other components together and makes 
-							the whole system. Other components are registered to the main component,
-							which should have only one instance per application. The main component
-							is responsible for choosing right parent element for current 
-							section (as all section templates are written into one HTML file -
-							the index.html). It is also responsible for calling broadcast
-							callbacks to other components -- e.g. when the user loggs in
-							or out.
+
+- ArticleComponent: Component responsible for article management. It can create, edit,
+delete and sort the articles. For the text input the TextInputComponent is used.
+
+- TextInputComponent: This component is in fact rich text editor, with which the text
+can be edited. It now supports Bold, Italics, Underline, six levels of headings, external
+links, and internal links. Internal link is link to another section on the web. It starts
+with # (hash) symbol and is treated as link to the section named the same as the link is
+(without the # symbol). In the future we plan to extend this component for drag and drop
+of images and files that could be added directly to the text, or below the article.
+
+- MainComponent: This component connect all other components together and makes the whole
+system. Other components are registered to the main component, which should have only one 
+instance per application. The main component is responsible for choosing right parent 
+element for current section (as all section templates are written into one HTML file -
+the index.html). It is also responsible for calling broadcast callbacks to other 
+components -- e.g. when the user loggs in or out.
 							
 Dependencies
 ------------------
