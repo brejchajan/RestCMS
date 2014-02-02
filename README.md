@@ -40,10 +40,10 @@ The RestCMS JS library provides components to be able to manage the content of t
 Each component is bound with some HTML element into which the content is loaded.
 
 As for now the components ready to use are:
-	-	ArticleComponent: 	Component responsible for article management. It can create, edit,
+	- ArticleComponent: 	Component responsible for article management. It can create, edit,
 							delete and sort the articles. For the text input the TextInputComponent
 							is used.
-	- 	TextInputComponent: This component is in fact rich text editor, with which the text
+	- TextInputComponent: This component is in fact rich text editor, with which the text
 							can be edited. It now supports Bold, Italics, Underline, six
 							levels of headings, external links, and internal links. Internal
 							link is link to another section on the web. It starts with # (hash)
@@ -52,7 +52,7 @@ As for now the components ready to use are:
 							In the future we plan to extend this component for drag and drop
 							of images and files that could be added directly to the text, or
 							below the article.
-	- 	MainComponent: 		This component connect all other components together and makes 
+	- MainComponent: 		This component connect all other components together and makes 
 							the whole system. Other components are registered to the main component,
 							which should have only one instance per application. The main component
 							is responsible for choosing right parent element for current 
@@ -95,8 +95,8 @@ If you are not familiar with this, please refer <a href="https://developers.goog
 google tutorial</a> (just section 1) for google plus sign in. The next steps in the tutorial
 are implemented in RestCMS.
 5) Update the config.php file with the CLIENT_ID and CLIENT_SECRET keys.
-6) Create the database schema running the '''php vendor/bin/doctrine orm:schema-tool:update --force --dump-sql'''
-command, or you can just issue the '''./dbupdate.sh''' command. If you do not have access to 
+6) Create the database schema running the ```php vendor/bin/doctrine orm:schema-tool:update --force --dump-sql```
+command, or you can just issue the ```./dbupdate.sh``` command. If you do not have access to 
 server console (e.g. through ssh or by some other way), you can create your database locally
 and then copy it as raw SQL to the database on server.
 7) Open your browser and go to your webpage. It should say, that this template is not installed
