@@ -19,9 +19,9 @@ define("DBPASSWORD", "brejcha004");
 define("DBHOST", "localhost");
 
 /** Google Plus **/
-const CLIENT_ID = '965352633379-tpurhtet0fuvffit4bi2epdsh47p1tos.apps.googleusercontent.com';
+const CLIENT_ID = '965352633379-id8mac0mg6o26qi8v0qdru88tqggh5v4.apps.googleusercontent.com';
 
-const CLIENT_SECRET = 'NqiYLCNeEORqpwsiJTH4A72S';
+const CLIENT_SECRET = '1ue7qfM58xHIghnXZevP6ffM';
 
 const APPLICATION_NAME = "RestCMS";
 
