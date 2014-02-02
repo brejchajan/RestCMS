@@ -95,7 +95,9 @@ If you are not familiar with this, please refer <a href="https://developers.goog
 google tutorial</a> (just section 1) for google plus sign in. The next steps of the tutorial
 are implemented in RestCMS.
 
-5) Update the config.php file with the CLIENT_ID and CLIENT_SECRET keys.
+5) Update the config.php file with the CLIENT_ID and CLIENT_SECRET keys. Update ClientID on google
+sign in button in index.html, specifically the data-client-id attribute in button with id 
+gConncect.
 
 6) Create the database schema running the ```php vendor/bin/doctrine orm:schema-tool:update --force --dump-sql```
 command, or you can just issue the ```./dbupdate.sh``` command. If you do not have access to 
