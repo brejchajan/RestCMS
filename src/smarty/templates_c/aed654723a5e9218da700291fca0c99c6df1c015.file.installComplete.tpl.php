@@ -1,4 +1,4 @@
-<?php /* Smarty version Smarty-3.1.16, created on 2014-02-12 01:00:28
+<?php /* Smarty version Smarty-3.1.16, created on 2014-02-12 01:37:09
          compiled from "/Users/janbrejcha/Web/www/restcms/src/smarty/templates/installComplete.tpl" */ ?>
 <?php /*%%SmartyHeaderCode:121040814352f9e7abe376f9-29101644%%*/if(!defined('SMARTY_DIR')) exit('no direct access allowed');
 $_valid = $_smarty_tpl->decodeProperties(array (
@@ -7,7 +7,7 @@ $_valid = $_smarty_tpl->decodeProperties(array (
     'aed654723a5e9218da700291fca0c99c6df1c015' => 
     array (
       0 => '/Users/janbrejcha/Web/www/restcms/src/smarty/templates/installComplete.tpl',
-      1 => 1392163226,
+      1 => 1392163932,
       2 => 'file',
     ),
   ),

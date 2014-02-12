@@ -80,12 +80,16 @@ to create a bare repository with post-receive hook to copy the repository conten
 directory. With this setting you will be able to install new versions of RestCMS in a few seconds,
 but it is not obligatory to do so.
 
-2) Create the database on your MySQL server. No other servers than MySQL are supported now.
+2) Add the directory for compiled Smarty templates to the group of your Apache server, like this:
+```sudo chown nobody:nobody src/smarty/templates_c```. This works in case nobody is the user the Apache
+is using. On OSX it is usually _www user and group.
 
-3) With your browser go to the page of your website in the form yoursite.com/installation.php.
+3) Create the database on your MySQL server. No other servers than MySQL are supported now.
+
+4) With your browser go to the page of your website in the form yoursite.com/installation.php.
 This will run the installation wizard which instructs you what to do in your next steps.
 
-4) Now you are ready to go to hack the default template and make a design as you wish. You can
+5) Now you are ready to go to hack the default template and make a design as you wish. You can
 create new components and assign them to the elements in the page. Tutorials how to do this and
 much more will be prepared next week (8 or 9th of february 2014).
 
