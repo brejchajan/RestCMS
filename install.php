@@ -56,26 +56,16 @@ class Installation{
 	}
 	
 	private function install(){
-		$PROJECTDIR = mysql_real_escape_string($_POST['PROJECTDIR']);
+		$PROJECTDIR = mysql_escape_string($_POST['PROJECTDIR']);
 		$SRCDIRSUFFIX = "/src/cz/brejchajan/restcms";
 		$SRCDIR = $PROJECTDIR . $SRCDIRSUFFIX;
-		$TIMEZONE = mysql_real_escape_string($_POST['TIMEZONE']);
-		$DBTYPE = mysql_real_escape_string($_POST['DBTYPE']);
-		$DBNAME = mysql_real_escape_string($_POST['DBNAME']);
-		$DBUSER = mysql_real_escape_string($_POST['DBUSER']);
-		$DBPASSWORD = mysql_real_escape_string($_POST['DBPASSWORD']);
-		$CLIENT_ID = mysql_real_escape_string($_POST['CLIENT_ID']);
-		$CLIENT_SECRET = mysql_real_escape_string($_POST['CLIENT_SECRET']);
-		/*
-		var_dump($PROJECTDIR);
-		var_dump($TIMEZONE);
-		var_dump($DBTYPE);
-		var_dump($DBNAME);
-		var_dump($DBUSER);
-		var_dump($DBPASSWORD);
-		var_dump($CLIENT_ID);
-		var_dump($CLIENT_SECRET);
-		*/
+		$TIMEZONE = mysql_escape_string($_POST['TIMEZONE']);
+		$DBTYPE = mysql_escape_string($_POST['DBTYPE']);
+		$DBNAME = mysql_escape_string($_POST['DBNAME']);
+		$DBUSER = mysql_escape_string($_POST['DBUSER']);
+		$DBPASSWORD = mysql_escape_string($_POST['DBPASSWORD']);
+		$CLIENT_ID = mysql_escape_string($_POST['CLIENT_ID']);
+		$CLIENT_SECRET = mysql_escape_string($_POST['CLIENT_SECRET']);
 		
 		$configScript = 
 "<?php
