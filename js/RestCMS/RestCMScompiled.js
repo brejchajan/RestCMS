@@ -970,7 +970,7 @@ TextInputComponent.prototype.addLink = function(e){
 		//create new selection without hashtag
 		var sel = self.getSelection();
 		var range = document.createRange();
-		range.setStart(sel.focusNode, 1);
+		range.setStart(sel.focusNode, i);
 		range.setEnd(sel.focusNode, sel.focusNode.textContent.length);
 		sel.removeAllRanges();
 		sel.addRange(range);
@@ -1402,7 +1402,13 @@ ArticleComponent.prototype.registerDrag = function(tag){
 	}
 };
 
-
+/**
+ Unregisters drag when the mouseup event above element being dragged occurs.
+ Clears the timer.
+ Sets proper position on the dragged element
+ Updates the sequence numbers of articles (their position)
+ @param tag		the event object.
+ */
 ArticleComponent.prototype.unregisterDrag = function(tag){
 	//eventually stop long press timeout
 		clearTimeout(this._longPressTimer);

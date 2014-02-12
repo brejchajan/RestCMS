@@ -244,7 +244,7 @@ TextInputComponent.prototype.addLink = function(e){
 		//create new selection without hashtag
 		var sel = self.getSelection();
 		var range = document.createRange();
-		range.setStart(sel.focusNode, 1);
+		range.setStart(sel.focusNode, i);
 		range.setEnd(sel.focusNode, sel.focusNode.textContent.length);
 		sel.removeAllRanges();
 		sel.addRange(range);
