@@ -5,7 +5,7 @@
  * all rights reserved.
  */
 
-require_once(__DIR__ . "/../config.php");
+require_once(__DIR__ . "/../config/config.php");
 require_once(PROJECTDIR . "/bootstrap.php");
 require_once(SRCDIR . "/persistence/Template.php");
 require_once(SRCDIR . "/persistence/Component.php");

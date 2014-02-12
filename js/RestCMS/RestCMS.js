@@ -173,11 +173,13 @@ RestCMS.doLogout = function(){
 	RestCMS._mainComponent.onLogout();
 }
 
-RestCMS.logout = function(){
+RestCMS.logout = function(e){
+	e.preventDefault();
 	$.ajax({
 		   type: 'DELETE',
 		   url: 'http://' + window.location.host + '/restcms.php/connect?state='+window.state,
 		   contentType: 'application/octet-stream; charset=utf-8',
+		   async: true,
 		   success: function(result) {
 				RestCMS.doLogout();
 		   }

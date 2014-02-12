@@ -5,7 +5,7 @@
  * all rights reserved.
  */
 
-require_once("config.php");
+require_once("config/config.php");
 require_once(PROJECTDIR . "/bootstrap.php");
 require_once(SRCDIR . "/resources/TemplateResource.php");
 require_once(SRCDIR . "/resources/ComponentResource.php");

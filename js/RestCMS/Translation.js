@@ -19,4 +19,5 @@ var Translation = function(){
 	RestCMS.addTranslation(["Normal user", "Běžný uživatel"]);
 	RestCMS.addTranslation(["Link", "Odkaz"]);
 	RestCMS.addTranslation(["Type name of template to be used with this link", "Zadejte název template, který bude použit pro tento odkaz"]);
+	RestCMS.addTranslation(["Step", "Krok"]);
 };
