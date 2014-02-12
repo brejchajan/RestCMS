@@ -55,7 +55,9 @@ var ArticleComponent = function(componentName){
 	/// The elements that were moved down during animation of drag and drop.
 	this._movedElements = [];
 	/// The count of the articles in this component.
-	this._articleCount = 0;
+	/// initial value is -1 because the add is asynchronous and the count must
+	/// be incremented before the add.
+	this._articleCount = -1;
 	/// The first article element in this component.
 	this._firstArticle = null;
 	/// Content of the element being dragged. While dragging the elements content
@@ -185,7 +187,7 @@ ArticleComponent.prototype.removeAllArticles = function(){
 		}
 		article = nextArticle;
 	}
-	this._articleCount = 0;
+	this._articleCount = -1;
 };
 
 /**
@@ -195,6 +197,7 @@ ArticleComponent.prototype.removeAllArticles = function(){
 						so only new article element is placed into DOM.
 */
 ArticleComponent.prototype.createNewArticle = function(articleData){
+	this._articleCount++;
 	if (articleData.text != null){
 		this.createTextInputComponent(articleData.url, articleData);
 	}
@@ -209,8 +212,6 @@ ArticleComponent.prototype.createNewArticle = function(articleData){
 			this.createTextInputComponent(resourceUrl, null);
 		}).bind(this), true);
 	}
-	this._articleCount++;
-	
 };
 
 /**

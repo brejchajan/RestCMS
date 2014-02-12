@@ -1,5 +1,5 @@
 <?php
-require_once("config.php");
+require_once("config/config.php");
 require_once(PROJECTDIR . "/bootstrap.php");
 require_once(SRCDIR . "/persistence/Article.php");
 
