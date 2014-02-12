@@ -1,9 +1,9 @@
 <?php
 require_once(__DIR__ . "/../bootstrap.php");
-require_once(__DIR__ . "/HelperTest.php");
-require_once(__DIR__ . "/ComponentTest.php");
-require_once(__DIR__ . "/TemplateTest.php");
-require_once(__DIR__ . "/ArticleTest.php");
+require_once("HelperTest.php");
+require_once("ComponentTest.php");
+require_once("TemplateTest.php");
+require_once("ArticleTest.php");
 
 
 $test1 = new HelperTest($em);
