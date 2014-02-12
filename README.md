@@ -74,44 +74,18 @@ But not all dependencies can be bundled with the project. These are:
  	
 Installation
 ------------------
-The installation is not complicated, though we are planning to add user-friendly installer in
-the future, that will handle the configuration.
 
 1) Clone the git repository and copy it in your server DocumentRoot directory. We recommend you
 to create a bare repository with post-receive hook to copy the repository content into the web
 directory. With this setting you will be able to install new versions of RestCMS in a few seconds,
 but it is not obligatory to do so.
 
-2) Create the database on your MySQL server. If you want to have some other server than MySQL,
-you must change the Doctrine database driver in ```{RestCMSDir}/bootstrap.php``` in section "Database
-configuration parameters". Other drivers than MySQL were not tested, though.
+2) Create the database on your MySQL server. No other servers than MySQL are supported now.
 
-3) Go to ```{RestCMSDir}/src/cz/brejchajan/restcms/config.php``` and change the PROJECT_DIR 
-to the directory {RestCMSDir} - the root of your project. It should be absolute path on your
-fileystem. Please, change the settings of your database connection as well.
+3) With your browser go to the page of your website in the form yoursite.com/installation.php.
+This will run the installation wizard which instructs you what to do in your next steps.
 
-4) Register new Google app on <a href="https://code.google.com/apis/console">Google apis console</a>.
-If you are not familiar with this, please refer <a href="https://developers.google.com/+/quickstart/javascript">
-google tutorial</a> (just section 1) for google plus sign in. The next steps of the tutorial
-are implemented in RestCMS.
-
-5) Update the config.php file with the CLIENT_ID and CLIENT_SECRET keys. Update ClientID on google
-sign in button in index.html, specifically the data-client-id attribute in button with id 
-gConncect.
-
-6) Create the database schema running the ```php vendor/bin/doctrine orm:schema-tool:update --force --dump-sql```
-command, or you can just issue the ```./dbupdate.sh``` command. If you do not have access to 
-server console (e.g. through ssh or by some other way), you can create your database locally
-and then copy it as raw SQL to the database on server.
-
-7) Open your browser and go to your webpage. It should say, that this template is not installed
-and it would be installed right after you log in with admin rights.
-
-8) Log in with your google account (on the bottom of the default index.html page). As you login
-as the first user, you will be granted the ADMIN rights and the default template will be installed
-with all components that are needed into your database.
-
-9) Now you are ready to go to hack the default template and make a design as you wish. You can
+4) Now you are ready to go to hack the default template and make a design as you wish. You can
 create new components and assign them to the elements in the page. Tutorials how to do this and
 much more will be prepared next week (8 or 9th of february 2014).
 
