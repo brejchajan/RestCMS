@@ -3,7 +3,7 @@
 use Doctrine\ORM\Tools\Setup;
 use Doctrine\ORM\EntityManager;
 
-require_once ("src/cz/brejchajan/restcms/config.php");
+include ("src/cz/brejchajan/restcms/config/config.php");
 require_once __DIR__.'/vendor/autoload.php';
 // Create a simple "default" Doctrine ORM configuration for Annotations
 
