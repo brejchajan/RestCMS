@@ -3,7 +3,7 @@ RestCMS
 
 Help us!
 ------------------
-If you like the project we would be glad to help! This piece of software needs a lot of 
+If you like the project we would be glad for help! This piece of software needs a lot of 
 different things to be done which requires different people at different positions.
 There is programming in php and JavaScript. You can also make translations (at least English - Czech).
 We also need webdesigners, so so HTML and CSS coders are welcome.
