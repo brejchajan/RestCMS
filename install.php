@@ -23,7 +23,11 @@
 /** 
  * Installation wizard for RestCMS system
  */
-require_once("bootstrap.php");
+ini_set('display_errors', 1); 
+error_reporting(E_ALL);
+
+date_default_timezone_set('Europe/Prague');
+
 
 
 //Smarty for MVC for installation scripts and other output needed scripts on server.
@@ -56,16 +60,16 @@ class Installation{
 	}
 	
 	private function install(){
-		$PROJECTDIR = mysql_escape_string($_POST['PROJECTDIR']);
+		$PROJECTDIR = $_POST['PROJECTDIR'];
 		$SRCDIRSUFFIX = "/src/cz/brejchajan/restcms";
 		$SRCDIR = $PROJECTDIR . $SRCDIRSUFFIX;
-		$TIMEZONE = mysql_escape_string($_POST['TIMEZONE']);
-		$DBTYPE = mysql_escape_string($_POST['DBTYPE']);
-		$DBNAME = mysql_escape_string($_POST['DBNAME']);
-		$DBUSER = mysql_escape_string($_POST['DBUSER']);
-		$DBPASSWORD = mysql_escape_string($_POST['DBPASSWORD']);
-		$CLIENT_ID = mysql_escape_string($_POST['CLIENT_ID']);
-		$CLIENT_SECRET = mysql_escape_string($_POST['CLIENT_SECRET']);
+		$TIMEZONE = $_POST['TIMEZONE'];
+		$DBTYPE = $_POST['DBTYPE'];
+		$DBNAME = $_POST['DBNAME'];
+		$DBUSER = $_POST['DBUSER'];
+		$DBPASSWORD = $_POST['DBPASSWORD'];
+		$CLIENT_ID = $_POST['CLIENT_ID'];
+		$CLIENT_SECRET = $_POST['CLIENT_SECRET'];
 		
 		$configScript = 
 "<?php
@@ -109,10 +113,26 @@ const APPLICATION_NAME = \"RestCMS\";
 	
 	private function installComplete(){
 		$_POST = array();
-		include("src/cz/brejchajan/restcms/config/config.php");
-		include("bootstrap.php");
 		//update database
-		shell_exec('php vendor/bin/doctrine orm:schema-tool:update --force --dump-sql');
+		//shell_exec('php vendor/bin/doctrine orm:schema-tool:update --force --dump-sql');
+		include("bootstrap.php");
+		include('src/cz/brejchajan/restcms/persistence/User.php');
+		include('src/cz/brejchajan/restcms/persistence/Article.php');
+		include('src/cz/brejchajan/restcms/persistence/Component.php');
+		include('src/cz/brejchajan/restcms/persistence/Template.php');
+		$tool = new \Doctrine\ORM\Tools\SchemaTool($em);
+		$classes = array(
+		  $em->getClassMetadata('User'),
+		  $em->getClassMetadata('Article'),
+		  $em->getClassMetadata('Component'),
+		  $em->getClassMetadata('Template')
+		);
+		try{
+			$tool->updateSchema($classes);
+		}
+		catch(Exception $e){
+			echo $e;
+		}
 		
 		$this->smarty->assign("web_address", "http://" . $_SERVER['HTTP_HOST']);
 		$this->smarty->assign("CLIENT_ID", CLIENT_ID);

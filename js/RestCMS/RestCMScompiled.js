@@ -696,6 +696,7 @@ MainComponent.prototype.buildComponent = function(){
 	for (var key in this._pageComponents){
 		var component = this._pageComponents[key];
 		component.componentNamePrefix = prefix;
+		//FIXME attachment could be not only to class
 		component.reattachToClass();
 	}
 	

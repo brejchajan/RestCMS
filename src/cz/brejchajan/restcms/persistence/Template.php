@@ -1,6 +1,5 @@
 <?php
-
-/** Part of the RestCMS priject.
+/** Part of the RestCMS project.
  * @author Jan Brejcha 2014,
  * all rights reserved.
  */
@@ -11,12 +10,12 @@
 class Template{
 
 	/**
-	 * @Id @Column(type="string")
+	 * @Id @Column(type="string", length=50)
 	 */
 	protected $name;
 
 	/**
-	 * @Id @Column(type="string");
+	 * @Id @Column(type="string", length=50);
 	 */
 	protected $vendor;
 

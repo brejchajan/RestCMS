@@ -60,13 +60,20 @@ class ConnectResource
 				$googleClient->authenticate($code);
 				$tok = $googleClient->getAccessToken();
 				$token = json_decode($tok);
+
 				// You can read the Google user ID in the ID token.
 				// "sub" represents the ID token subscriber which in our case
 				// is the user ID. This sample does not use the user ID.
-				$attributes = $googleClient->verifyIdToken($token->id_token, CLIENT_ID)
-					->getAttributes();
+				try{
+					$attributes = $googleClient->verifyIdToken($token->id_token, CLIENT_ID)
+						->getAttributes();
+				}
+				catch(Exception $e){
+					return new Response($e, 200);
+				}
+				
 				$gplus_id = $attributes["payload"]["sub"];
-
+				
 				//verify permission
 				//check if the user exists
 				$me = $googlePlus->people->get('me');

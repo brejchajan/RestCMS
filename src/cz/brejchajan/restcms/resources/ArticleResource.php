@@ -32,13 +32,18 @@ class ArticleResource
 		 */
 		$this->rest->get('/template/{vendor}/{name}/component/{cname}/article', 
 		function($vendor, $name, $cname) use($em){
-				
 			$template = Template::findTemplate($name, $vendor, $em);
 			if ($template == NULL){
 				return new Response("Template from vendor $vendor with name $name is not installed",
 				       	422);	
 			}
-			$component = Component::find($template, $cname, $em);
+			try{
+				$component = Component::find($template, $cname, $em);
+			}
+			catch(Exception $e){
+				return new Response($e, 500);
+			}
+
 			if ($component == NULL){
 				return new Response("Component named " . $cname . 
 					" is not installed in this template;", 424);
