@@ -45,7 +45,7 @@ $apiConfig = array(
 
     // IO Class dependent configuration, you only have to configure the values
     // for the class that was configured as the ioClass above
-    'ioFileCache_directory'  => './tmp',
+    'ioFileCache_directory'  => __DIR__ . '/../../../../src/cz/brejchajan/restcms/config/GoogleTmp',
 
     // Definition of service specific values like scopes, oauth token URLs, etc
     'services' => array(
