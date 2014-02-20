@@ -1,16 +1,6 @@
 RestCMS
 ==================
 
-Help us!
-------------------
-If you like the project we would be glad for help! This piece of software needs a lot of 
-different things to be done which requires different people at different positions.
-There is programming in php and JavaScript. You can also make translations (at least English - Czech).
-We also need webdesigners, so so HTML and CSS coders as well as logo and UI designers are welcome.
-
-If you are interested, please contact the project founder: brejchaja@gmail.com.
-Thank you very much!
-
 Introduction
 ------------------
 
@@ -25,8 +15,6 @@ The project is very young, but grows really fast. Just check out our
 <a href="http://restcms.brejchajan.cz/#homeEn">homepage</a> to see the system in action. Meanwhile we are
 building the Docs and How tos for you (in english and czech). We hope it is ready until 
 the end of the February.
-
-Stay tuned, the RestCMS is coming.
 
 Architecture
 ------------------
@@ -324,6 +312,15 @@ It is really simple and minimal template which is used by this website. I hope t
 you have finished reading this article you are prepared to hack this template to suit your needs.
 
 
+Help us!
+------------------
+If you like the project we would be glad for help! This piece of software needs a lot of 
+different things to be done which requires different people at different positions.
+There is programming in php and JavaScript. You can also make translations (at least English - Czech).
+We also need webdesigners, so so HTML and CSS coders as well as logo and UI designers are welcome.
+
+If you are interested, please contact the project founder: brejchaja@gmail.com.
+Thank you very much!
 
 
 							
