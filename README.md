@@ -319,7 +319,7 @@ included in the RestCMS system and there will be not needed to add it manually t
 
 Have a look at life example
 ----------------------------
-The code I described here can be seen at restcms.brejchajan.cz/minimalistic_template.html. 
+The code I described here can be seen at http://restcms.brejchajan.cz/minimalistic_template.html. 
 It is really simple and minimal template which is used by this website. I hope that after 
 you have finished reading this article you are prepared to hack this template to suit your needs.
 
