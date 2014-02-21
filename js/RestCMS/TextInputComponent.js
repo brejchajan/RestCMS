@@ -8,6 +8,7 @@ var TextInputComponent = function(resource, resourceUrl, articleData){
 	this._resourceUrl = resourceUrl;
 	this._articleData = articleData;
 	this._files = [];
+	this._draggingObject = null;
 };
 
 TextInputComponent.prototype = new Component();
@@ -36,20 +37,41 @@ TextInputComponent.prototype.onDragEnter = function(e){
 
 TextInputComponent.prototype.onDragLeave = function(e){
 	this._textarea.style.backgroundColor = "";
+	this.trashDraggable(e);
+}
+
+
+
+TextInputComponent.prototype.trashDraggable = function(e){
+	if (e.target.id != "RestCMSTextEditor"){
+		var parent = e.target.parentNode.parentNode;
+		if (parent != null){
+			parent.removeChild(e.target.parentNode);
+		}
+		this.updateParent();
+	}
 }
 
 TextInputComponent.prototype.onDrop = function(e){
-	e.preventDefault();
 	this._textarea.style.backgroundColor = "";
 	var fileList = e.dataTransfer.files;
-	for (var i = 0; i < fileList.length; i++){
-		var file = fileList[i];
-		var formData = new FormData();
-		formData.append("file", file);
-		var uifile = new File(file.name, -1, formData);
-		this._files.push(uifile);
-		this._textarea.appendChild(uifile.getBoxUI());
+	if (fileList.length > 0){
+		for (var i = 0; i < fileList.length; i++){
+			var file = fileList[i];
+			var formData = new FormData();
+			formData.append("file", file);
+			var uifile = new File(file.name, -1, formData);
+			this._files.push(uifile);
+			var uibox = uifile.getBoxUI();
+			uibox.addEventListener("dragstart", this.bootstrapDraggables.bind(this));
+			this._textarea.appendChild(uibox);
+		}
 	}
+	else{
+		this._textarea.appendChild(this._draggingObject);
+		this._draggingObject = null;
+	}
+	this.updateParent();
 }
 
 TextInputComponent.prototype.buildBold = function(){
@@ -183,6 +205,13 @@ TextInputComponent.prototype.hideInputUI = function(){
 		this._parent.parentNode.removeChild(this._italic);
 		this._parent.parentNode.removeChild(this._bold);
 		this._inputUIVisible = false;
+		
+		//fix draggables
+		var draggables = this._textarea.querySelectorAll("[draggable=true]");
+		for (var i = 0; i < draggables.length; i++){
+			var draggable = draggables[i];
+			draggable.removeEventListener("dragstart", this.bootstrapDraggables.bind(this));
+		}
 	}
 };
 
@@ -196,8 +225,20 @@ TextInputComponent.prototype.showInputUI = function(){
 		this._parent.parentNode.insertBefore(this._italic, this._parent.nextSibling);
 		this._parent.parentNode.insertBefore(this._bold, this._parent.nextSibling);
 		this._inputUIVisible = true;
+		
+		//fix draggables
+		var draggables = this._textarea.querySelectorAll("[draggable=true]");
+		for (var i = 0; i < draggables.length; i++){
+			var draggable = draggables[i];
+			draggable.addEventListener("dragstart", this.bootstrapDraggables.bind(this));
+		}
 	}
 
+};
+
+TextInputComponent.prototype.bootstrapDraggables = function(e){
+	this._draggingObject = e.target;
+	e.dataTransfer.setData("text/plain", null);
 };
 
 TextInputComponent.prototype.showInputUIEventProxy = function(e){
