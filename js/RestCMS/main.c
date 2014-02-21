@@ -1,3 +1,4 @@
+#include "File.js"
 #include "UrlBuilders.js"
 #include "Resource.js"
 #include "Translation.js"

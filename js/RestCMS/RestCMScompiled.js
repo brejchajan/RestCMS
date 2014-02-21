@@ -1,5 +1,53 @@
 
 
+/*
+ This is a part of project named RestCMS. It is lightweight, extensible and easy to use
+ content management system that stands on the idea that server should serve the
+ content and clients should give the form to that content.
+ 
+ Copyright (C) 2014  Jan Brejcha
+ 
+ This program is free software: you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License, or
+ any later version.
+ 
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+ 
+ You should have received a copy of the GNU General Public License
+ along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+/**
+	The class to hold the file info to show and to upload on server.
+ */
+
+var File = function(name, position, formData){
+	this._name = name;
+	this._position = position;
+	this._formData = formData;
+	this._boxUI = null;
+	this.buildBoxUI();
+}
+
+File.prototype.getBoxUI = function(){
+	return this._boxUI;
+}
+
+File.prototype.buildBoxUI = function(){
+	var button = document.createElement("span");
+	button.setAttribute("draggable", "true");
+	var icon = document.createElement("span");
+	icon.className = "glyphicon glyphicon-file";
+	button.appendChild(icon);
+	var a = document.createElement("a");
+	a.appendChild(document.createTextNode(this._name));
+	button.appendChild(a);
+	this._boxUI = button;
+}
 /* 
  This is a part of project named RestCMS. It is lightweight, extensible and easy to use
  content management system that stands on the idea that server should serve the
@@ -734,6 +782,7 @@ var TextInputComponent = function(resource, resourceUrl, articleData){
 	this._resource = resource;
 	this._resourceUrl = resourceUrl;
 	this._articleData = articleData;
+	this._files = [];
 };
 
 TextInputComponent.prototype = new Component();
@@ -755,6 +804,28 @@ TextInputComponent.prototype.buildComponent = function(){
 		this.showInputUI();
 	}
 };
+
+TextInputComponent.prototype.onDragEnter = function(e){
+	this._textarea.style.backgroundColor = "#99FF66";
+}
+
+TextInputComponent.prototype.onDragLeave = function(e){
+	this._textarea.style.backgroundColor = "";
+}
+
+TextInputComponent.prototype.onDrop = function(e){
+	e.preventDefault();
+	this._textarea.style.backgroundColor = "";
+	var fileList = e.dataTransfer.files;
+	for (var i = 0; i < fileList.length; i++){
+		var file = fileList[i];
+		var formData = new FormData();
+		formData.append("file", file);
+		var uifile = new File(file.name, -1, formData);
+		this._files.push(uifile);
+		this._textarea.appendChild(uifile.getBoxUI());
+	}
+}
 
 TextInputComponent.prototype.buildBold = function(){
 	this._bold = document.createElement("a");
@@ -823,6 +894,9 @@ TextInputComponent.prototype.buildTextarea = function(){
 		this._textarea.innerHTML = this._articleData.text;
 		this.updateParent();
 	}
+	this._textarea.addEventListener("dragenter", this.onDragEnter.bind(this), false);
+	this._textarea.addEventListener("dragleave", this.onDragLeave.bind(this), false);
+	this._textarea.addEventListener("drop", this.onDrop.bind(this), false);
 };
 
 TextInputComponent.prototype.buildDoneButton = function(){
@@ -1363,11 +1437,13 @@ ArticleComponent.prototype.createTextInputComponent = function(resourceUrl, arti
  */
 ArticleComponent.prototype.setDraggable = function(article){
 	article.addEventListener("mousedown", (function(e){
-										   clearTimeout(this._longPressTimer);
-										   this._longPressTimer = setTimeout((function(){
-																				this.registerDrag(article);
-																			  }).bind(this), 200);
-										   }).bind(this), true);
+										   if (e.target.className == "articleDiv"){
+											   clearTimeout(this._longPressTimer);
+											   this._longPressTimer = setTimeout((function(){
+																					this.registerDrag(article);
+																				  }).bind(this), 200);
+										   }
+											   }).bind(this), true);
 	article.addEventListener("mouseup", this.unregisterDrag.bind(this), false);
 };
 
@@ -1397,7 +1473,7 @@ ArticleComponent.prototype.registerDrag = function(tag){
 			if (articleDiv.innerHTML != text){
 				this._dragElementContent = articleDiv.innerHTML;
 				//change the drag element content to the advice what to do when dragging
-				articleDiv.innerHTML = text;
+				articleDiv.innerHTML = text + "<br><br><br><br>";
 			}
 		}
 	}

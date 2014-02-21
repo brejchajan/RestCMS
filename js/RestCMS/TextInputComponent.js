@@ -7,6 +7,7 @@ var TextInputComponent = function(resource, resourceUrl, articleData){
 	this._resource = resource;
 	this._resourceUrl = resourceUrl;
 	this._articleData = articleData;
+	this._files = [];
 };
 
 TextInputComponent.prototype = new Component();
@@ -28,6 +29,28 @@ TextInputComponent.prototype.buildComponent = function(){
 		this.showInputUI();
 	}
 };
+
+TextInputComponent.prototype.onDragEnter = function(e){
+	this._textarea.style.backgroundColor = "#99FF66";
+}
+
+TextInputComponent.prototype.onDragLeave = function(e){
+	this._textarea.style.backgroundColor = "";
+}
+
+TextInputComponent.prototype.onDrop = function(e){
+	e.preventDefault();
+	this._textarea.style.backgroundColor = "";
+	var fileList = e.dataTransfer.files;
+	for (var i = 0; i < fileList.length; i++){
+		var file = fileList[i];
+		var formData = new FormData();
+		formData.append("file", file);
+		var uifile = new File(file.name, -1, formData);
+		this._files.push(uifile);
+		this._textarea.appendChild(uifile.getBoxUI());
+	}
+}
 
 TextInputComponent.prototype.buildBold = function(){
 	this._bold = document.createElement("a");
@@ -96,6 +119,9 @@ TextInputComponent.prototype.buildTextarea = function(){
 		this._textarea.innerHTML = this._articleData.text;
 		this.updateParent();
 	}
+	this._textarea.addEventListener("dragenter", this.onDragEnter.bind(this), false);
+	this._textarea.addEventListener("dragleave", this.onDragLeave.bind(this), false);
+	this._textarea.addEventListener("drop", this.onDrop.bind(this), false);
 };
 
 TextInputComponent.prototype.buildDoneButton = function(){

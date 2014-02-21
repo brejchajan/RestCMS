@@ -3,7 +3,6 @@ RestCMS
 
 Introduction
 ------------------
-
 Easy to manage, highly extensible CMS system based on JavaScript and Rest. Thick client, thin server.
 
 The basic idea if this project is: the server manages only the data of the CMS application.

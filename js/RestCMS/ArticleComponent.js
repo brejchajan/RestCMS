@@ -274,11 +274,13 @@ ArticleComponent.prototype.createTextInputComponent = function(resourceUrl, arti
  */
 ArticleComponent.prototype.setDraggable = function(article){
 	article.addEventListener("mousedown", (function(e){
-										   clearTimeout(this._longPressTimer);
-										   this._longPressTimer = setTimeout((function(){
-																				this.registerDrag(article);
-																			  }).bind(this), 200);
-										   }).bind(this), true);
+										   if (e.target.className == "articleDiv"){
+											   clearTimeout(this._longPressTimer);
+											   this._longPressTimer = setTimeout((function(){
+																					this.registerDrag(article);
+																				  }).bind(this), 200);
+										   }
+											   }).bind(this), true);
 	article.addEventListener("mouseup", this.unregisterDrag.bind(this), false);
 };
 
@@ -308,7 +310,7 @@ ArticleComponent.prototype.registerDrag = function(tag){
 			if (articleDiv.innerHTML != text){
 				this._dragElementContent = articleDiv.innerHTML;
 				//change the drag element content to the advice what to do when dragging
-				articleDiv.innerHTML = text;
+				articleDiv.innerHTML = text + "<br><br><br><br>";
 			}
 		}
 	}
