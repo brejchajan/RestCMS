@@ -25,29 +25,108 @@
 	The class to hold the file info to show and to upload on server.
  */
 
-var File = function(name, position, formData){
+var File = function(name, position, formData, uploadingComponentName, uploadErrorCallback){
 	this._name = name;
 	this._position = position;
 	this._formData = formData;
+	this._uploadErrorCallback = uploadErrorCallback;
+	this._uploadingComponentName = uploadingComponentName;
 	this._boxUI = null;
-	this.buildBoxUI();
-}
+	this._progressBar = null;
+	this._progress = null;
+	this._link = null;
+	this._fileResource = this.createFileResource(name);
+};
 
 File.prototype.getBoxUI = function(){
-	return this._boxUI;
-}
+	return this.buildBoxUI();
+};
 
+File.prototype.setProgress = function(value){
+	this._progressBar.setAttribute("aria-valuenow", '"' + value + '"');
+	this._progressBar.innerHTML = value + "%";
+	this._progressBar.style.width = value + "%";
+};
+
+/**
+ Builds the UI showing the actual file. It shows progress bar when uploading
+ the file to the server. After the upload is finished, this UI is clickable to 
+ show or download the file.
+ */
 File.prototype.buildBoxUI = function(){
-	var button = document.createElement("span");
-	button.setAttribute("draggable", "true");
+	var envelope = document.createElement("div");
+	var button = document.createElement("div");
+	envelope.setAttribute("draggable", "true");
 	var icon = document.createElement("span");
 	icon.className = "glyphicon glyphicon-file";
 	button.appendChild(icon);
 	var a = document.createElement("a");
 	a.appendChild(document.createTextNode(this._name));
+	this._link = a;
 	button.appendChild(a);
-	this._boxUI = button;
+	envelope.appendChild(button);
+	//progress bar
+	var progress = document.createElement("div");
+	this._progress = progress;
+	progress.className = "progress";
+	progress.style.width = "100px";
+	var progressBar = document.createElement("div");
+	progressBar.className = "progress-bar";
+	progressBar.setAttribute("role", "progressbar");
+	progressBar.setAttribute("aria-valuenow", "0");
+	progressBar.setAttribute("aria-valuemin", "0");
+	progressBar.setAttribute("aria-valuemax", "100");
+	progressBar.style.width = "0%";
+	progressBar.innerHTML = "0%";
+	this._progressBar = progressBar;
+	progress.appendChild(progressBar);
+	button.appendChild(progress);
+	this._boxUI = envelope;
+	//start asynchronous upload
+	this._fileResource.addResourceWithProgress(this._formData, this, this.uploadDone.bind(this));
+	return envelope;
+};
+
+File.prototype.uploadDone = function(address){
+	this._link.href = address;
+	this._progress.style.display = "none";
+	this._boxUI.addEventListener("dragend", this.deleteFile.bind(this), false);
 }
+
+File.prototype.deleteFile = function(e){
+	if (e.dataTransfer.dropEffect == 'none'){
+		//delete file
+		//alert("delete file");
+	}
+}
+
+File.prototype.createFileResource = function(fileName){
+	/// Success handler of the resource
+	var successHandler = function(){
+		//No need to inform about success, only errors are treated.
+	}
+	/// Error handler of the resource.
+	var errorHandler = function(e){
+		alert("The file could not be uploaded. Try again later.");
+		if (this._boxUI.parentNode != null){
+			this._boxUI.parentNode.removeChild(this._boxUI);
+			this._uploadErrorCallback();
+		}
+	}
+	//the resource
+	var resource = new Resource(errorHandler.bind(this), successHandler, "fileUpload", "fileUpload", "sampleurl", ["file"]);
+	//template url builder
+	this._templateUrlBuilder = new TemplateUrlBuilder(window.templateVendor, window.templateName);
+	//component url builder
+	this._componentUrlBuilder = new ComponentUrlBuilder(this._templateUrlBuilder, this._uploadingComponentName);
+	//article url builder
+	this._fileUrlBuilder = new FileUrlBuilder(this._componentUrlBuilder, fileName);
+	resource.setUrlBuilder(this._fileUrlBuilder);
+	return resource;
+
+};
+
+
 /* 
  This is a part of project named RestCMS. It is lightweight, extensible and easy to use
  content management system that stands on the idea that server should serve the
@@ -170,6 +249,32 @@ ArticleUrlBuilder.prototype.get = function(){
 ArticleUrlBuilder.prototype.put = function(){
 	return "/article";
 }
+
+
+/**
+ UrlBuilder for file upload resource
+ */
+var FileUrlBuilder = function(component, fileName){
+    this.component = component;
+	this._fileName = fileName;
+};
+/**
+ Generates post address for the resource.
+ @return	String the address of post request.
+ */
+FileUrlBuilder.prototype.post = function(){
+	return "restcms.php/template/" + this.component.template.vendor + "/" + this.component.template.name + "/component" + "/" + this.component.name + "/file";
+}
+/**
+ Generates get address for the resource.
+ @return	String the address of get request.
+ */
+FileUrlBuilder.prototype.get = function(){
+	return "restcms.php/template/" + this.component.template.vendor + "/" + this.component.template.name + "/component" + "/" + this.component.name + "/file" + this._fileName;
+}
+
+
+
 /*
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
@@ -371,6 +476,51 @@ Resource.prototype.addResource = function(data, callback, asynchronous){
 						}).bind(this)
 				});
 };
+
+/**
+ Adds resource with status bar updates
+ @param data	the data to be sent to server
+ @param status	the status bar object that conforms the status bar informal protocol.
+ @callback		the callback function to be called after the uplad is done.
+ */
+Resource.prototype.addResourceWithProgress = function(data, status, callback){
+	var url = this.urlBuilder.post();
+    var jqXHR=$.ajax({
+					 xhr: function() {
+					 var xhrobj = $.ajaxSettings.xhr();
+					 if (xhrobj.upload) {
+					 xhrobj.upload.addEventListener('progress', function(event) {
+													var percent = 0;
+													var position = event.loaded || event.position;
+													var total = event.total;
+													if (event.lengthComputable) {
+													percent = Math.ceil(position / total * 100);
+													}
+													//Set progress
+													status.setProgress(percent);
+													}, false);
+					 }
+					 return xhrobj;
+					 },
+					 url: url,
+					 type: "POST",
+					 contentType:false,
+					 processData: false,
+					 cache: false,
+					 data: data,
+					 success: (function(data){
+						status.setProgress(100);
+						if (callback != null){
+							callback(this.removeLineBreaks(data));
+						}
+					 }).bind(this),
+					 error: (function(XMLHttpRequest, textStatus, errorThrown) {
+							 this.errorHandler(XMLHttpRequest);
+							 }).bind(this)
+					 });
+	
+    
+}
 
 Resource.prototype.updateState = function(res){
 	var state = res.getResponseHeader('XState');
@@ -812,16 +962,19 @@ TextInputComponent.prototype.onDragEnter = function(e){
 
 TextInputComponent.prototype.onDragLeave = function(e){
 	this._textarea.style.backgroundColor = "";
-	this.trashDraggable(e);
 }
 
-
+TextInputComponent.prototype.onDragEnd = function(e){
+	if (this._draggingObject != null && e.dataTransfer.dropEffect == 'none'){
+		this.trashDraggable(e);
+	}
+}
 
 TextInputComponent.prototype.trashDraggable = function(e){
 	if (e.target.id != "RestCMSTextEditor"){
-		var parent = e.target.parentNode.parentNode;
+		var parent = e.target.parentNode;
 		if (parent != null){
-			parent.removeChild(e.target.parentNode);
+			parent.removeChild(e.target);
 		}
 		this.updateParent();
 	}
@@ -835,17 +988,17 @@ TextInputComponent.prototype.onDrop = function(e){
 			var file = fileList[i];
 			var formData = new FormData();
 			formData.append("file", file);
-			var uifile = new File(file.name, -1, formData);
+			var uifile = new File(file.name, -1, formData, this._resource.urlBuilder.component.name, this.updateParent.bind(this));
 			this._files.push(uifile);
 			var uibox = uifile.getBoxUI();
 			uibox.addEventListener("dragstart", this.bootstrapDraggables.bind(this));
 			this._textarea.appendChild(uibox);
 		}
 	}
-	else{
+	/*else{
 		this._textarea.appendChild(this._draggingObject);
 		this._draggingObject = null;
-	}
+	}*/
 	this.updateParent();
 }
 
@@ -918,6 +1071,7 @@ TextInputComponent.prototype.buildTextarea = function(){
 	}
 	this._textarea.addEventListener("dragenter", this.onDragEnter.bind(this), false);
 	this._textarea.addEventListener("dragleave", this.onDragLeave.bind(this), false);
+	this._textarea.addEventListener("dragend", this.onDragEnd.bind(this), false);
 	this._textarea.addEventListener("drop", this.onDrop.bind(this), false);
 };
 
