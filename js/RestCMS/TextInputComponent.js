@@ -37,16 +37,19 @@ TextInputComponent.prototype.onDragEnter = function(e){
 
 TextInputComponent.prototype.onDragLeave = function(e){
 	this._textarea.style.backgroundColor = "";
-	this.trashDraggable(e);
 }
 
-
+TextInputComponent.prototype.onDragEnd = function(e){
+	if (this._draggingObject != null && e.dataTransfer.dropEffect == 'none'){
+		this.trashDraggable(e);
+	}
+}
 
 TextInputComponent.prototype.trashDraggable = function(e){
 	if (e.target.id != "RestCMSTextEditor"){
-		var parent = e.target.parentNode.parentNode;
+		var parent = e.target.parentNode;
 		if (parent != null){
-			parent.removeChild(e.target.parentNode);
+			parent.removeChild(e.target);
 		}
 		this.updateParent();
 	}
@@ -60,17 +63,17 @@ TextInputComponent.prototype.onDrop = function(e){
 			var file = fileList[i];
 			var formData = new FormData();
 			formData.append("file", file);
-			var uifile = new File(file.name, -1, formData);
+			var uifile = new File(file.name, -1, formData, this._resource.urlBuilder.component.name, this.updateParent.bind(this));
 			this._files.push(uifile);
 			var uibox = uifile.getBoxUI();
 			uibox.addEventListener("dragstart", this.bootstrapDraggables.bind(this));
 			this._textarea.appendChild(uibox);
 		}
 	}
-	else{
+	/*else{
 		this._textarea.appendChild(this._draggingObject);
 		this._draggingObject = null;
-	}
+	}*/
 	this.updateParent();
 }
 
@@ -143,6 +146,7 @@ TextInputComponent.prototype.buildTextarea = function(){
 	}
 	this._textarea.addEventListener("dragenter", this.onDragEnter.bind(this), false);
 	this._textarea.addEventListener("dragleave", this.onDragLeave.bind(this), false);
+	this._textarea.addEventListener("dragend", this.onDragEnd.bind(this), false);
 	this._textarea.addEventListener("drop", this.onDrop.bind(this), false);
 };
 
