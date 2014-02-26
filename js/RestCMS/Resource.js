@@ -200,6 +200,51 @@ Resource.prototype.addResource = function(data, callback, asynchronous){
 				});
 };
 
+/**
+ Adds resource with status bar updates
+ @param data	the data to be sent to server
+ @param status	the status bar object that conforms the status bar informal protocol.
+ @callback		the callback function to be called after the uplad is done.
+ */
+Resource.prototype.addResourceWithProgress = function(data, status, callback){
+	var url = this.urlBuilder.post();
+    var jqXHR=$.ajax({
+					 xhr: function() {
+					 var xhrobj = $.ajaxSettings.xhr();
+					 if (xhrobj.upload) {
+					 xhrobj.upload.addEventListener('progress', function(event) {
+													var percent = 0;
+													var position = event.loaded || event.position;
+													var total = event.total;
+													if (event.lengthComputable) {
+													percent = Math.ceil(position / total * 100);
+													}
+													//Set progress
+													status.setProgress(percent);
+													}, false);
+					 }
+					 return xhrobj;
+					 },
+					 url: url,
+					 type: "POST",
+					 contentType:false,
+					 processData: false,
+					 cache: false,
+					 data: data,
+					 success: (function(data){
+						status.setProgress(100);
+						if (callback != null){
+							callback(this.removeLineBreaks(data));
+						}
+					 }).bind(this),
+					 error: (function(XMLHttpRequest, textStatus, errorThrown) {
+							 this.errorHandler(XMLHttpRequest);
+							 }).bind(this)
+					 });
+	
+    
+}
+
 Resource.prototype.updateState = function(res){
 	var state = res.getResponseHeader('XState');
 	if (state != null){
