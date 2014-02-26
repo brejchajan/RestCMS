@@ -120,3 +120,28 @@ ArticleUrlBuilder.prototype.get = function(){
 ArticleUrlBuilder.prototype.put = function(){
 	return "/article";
 }
+
+
+/**
+ UrlBuilder for file upload resource
+ */
+var FileUrlBuilder = function(component, fileName){
+    this.component = component;
+	this._fileName = fileName;
+};
+/**
+ Generates post address for the resource.
+ @return	String the address of post request.
+ */
+FileUrlBuilder.prototype.post = function(){
+	return "restcms.php/template/" + this.component.template.vendor + "/" + this.component.template.name + "/component" + "/" + this.component.name + "/file";
+}
+/**
+ Generates get address for the resource.
+ @return	String the address of get request.
+ */
+FileUrlBuilder.prototype.get = function(){
+	return "restcms.php/template/" + this.component.template.vendor + "/" + this.component.template.name + "/component" + "/" + this.component.name + "/file" + this._fileName;
+}
+
+
