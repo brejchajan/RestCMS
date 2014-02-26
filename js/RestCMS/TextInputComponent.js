@@ -32,14 +32,17 @@ TextInputComponent.prototype.buildComponent = function(){
 };
 
 TextInputComponent.prototype.onDragEnter = function(e){
+	e.preventDefault();
 	this._textarea.style.backgroundColor = "#99FF66";
 }
 
 TextInputComponent.prototype.onDragLeave = function(e){
+	e.preventDefault();
 	this._textarea.style.backgroundColor = "";
 }
 
 TextInputComponent.prototype.onDragEnd = function(e){
+	e.preventDefault();
 	if (this._draggingObject != null && e.dataTransfer.dropEffect == 'none'){
 		this.trashDraggable(e);
 	}
@@ -56,6 +59,7 @@ TextInputComponent.prototype.trashDraggable = function(e){
 }
 
 TextInputComponent.prototype.onDrop = function(e){
+	e.preventDefault();
 	this._textarea.style.backgroundColor = "";
 	var fileList = e.dataTransfer.files;
 	if (fileList.length > 0){
