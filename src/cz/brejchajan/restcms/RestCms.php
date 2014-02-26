@@ -11,6 +11,7 @@ require_once(SRCDIR . "/resources/TemplateResource.php");
 require_once(SRCDIR . "/resources/ComponentResource.php");
 require_once(SRCDIR . "/resources/ArticleResource.php");
 require_once(SRCDIR . "/resources/ConnectResource.php");
+require_once(SRCDIR . "/resources/FileResource.php");
 
 class RestCms{
 
@@ -18,6 +19,7 @@ class RestCms{
 	private $componentResource;
 	private $articleResource;
 	private $connectResource;
+	private $fileResource;
 	private $googleClient;
 	private $rest;
 	private $googlePlus;
@@ -34,10 +36,12 @@ class RestCms{
 			'twig.path' => __DIR__,
 		));
 		$this->rest->register(new Silex\Provider\SessionServiceProvider());
+		$this->rest->register(new Silex\Provider\FormServiceProvider());
 		$this->templateResource = new TemplateResource($em, $this->rest);
 		$this->componentResource = new ComponentResource($em, $this->rest);
 		$this->articleResource = new ArticleResource($em, $this->rest);
 		$this->connectResource = new ConnectResource($em, $this->rest, $this->googleClient, $this->googlePlus);
+		$this->fileResource = new FileResource($em, $this->rest);
 	}
 
 
