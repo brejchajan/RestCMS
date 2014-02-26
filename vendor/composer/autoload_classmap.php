@@ -6,6 +6,7 @@ $vendorDir = dirname(dirname(__FILE__));
 $baseDir = dirname($vendorDir);
 
 return array(
+    'Collator' => $vendorDir . '/symfony/intl/Symfony/Component/Intl/Resources/stubs/Collator.php',
     'Google_About' => $vendorDir . '/google/google-api-php-client/src/contrib/Google_DriveService.php',
     'Google_AboutAdditionalRoleInfo' => $vendorDir . '/google/google-api-php-client/src/contrib/Google_DriveService.php',
     'Google_AboutAdditionalRoleInfoRoleSets' => $vendorDir . '/google/google-api-php-client/src/contrib/Google_DriveService.php',
@@ -975,6 +976,9 @@ return array(
     'Google_ZoneMaintenanceWindows' => $vendorDir . '/google/google-api-php-client/src/contrib/Google_ComputeService.php',
     'Google_ZoneOperationsServiceResource' => $vendorDir . '/google/google-api-php-client/src/contrib/Google_ComputeService.php',
     'Google_ZonesServiceResource' => $vendorDir . '/google/google-api-php-client/src/contrib/Google_ComputeService.php',
+    'IntlDateFormatter' => $vendorDir . '/symfony/intl/Symfony/Component/Intl/Resources/stubs/IntlDateFormatter.php',
+    'Locale' => $vendorDir . '/symfony/intl/Symfony/Component/Intl/Resources/stubs/Locale.php',
+    'NumberFormatter' => $vendorDir . '/symfony/intl/Symfony/Component/Intl/Resources/stubs/NumberFormatter.php',
     'SessionHandlerInterface' => $vendorDir . '/symfony/http-foundation/Symfony/Component/HttpFoundation/Resources/stubs/SessionHandlerInterface.php',
     'URI_Template_Parser' => $vendorDir . '/google/google-api-php-client/src/external/URITemplateParser.php',
     'googleApcCache' => $vendorDir . '/google/google-api-php-client/src/cache/Google_ApcCache.php',
