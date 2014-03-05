@@ -35,6 +35,7 @@ var File = function(name, position, formData, uploadingComponentName, uploadErro
 	this._progressBar = null;
 	this._progress = null;
 	this._link = null;
+	this._img = null;
 	this._fileResource = this.createFileResource(name);
 };
 
@@ -54,17 +55,6 @@ File.prototype.setProgress = function(value){
  show or download the file.
  */
 File.prototype.buildBoxUI = function(){
-	var envelope = document.createElement("div");
-	var button = document.createElement("div");
-	envelope.setAttribute("draggable", "true");
-	var icon = document.createElement("span");
-	icon.className = "glyphicon glyphicon-file";
-	button.appendChild(icon);
-	var a = document.createElement("a");
-	a.appendChild(document.createTextNode(this._name));
-	this._link = a;
-	button.appendChild(a);
-	envelope.appendChild(button);
 	//progress bar
 	var progress = document.createElement("div");
 	this._progress = progress;
@@ -80,18 +70,52 @@ File.prototype.buildBoxUI = function(){
 	progressBar.innerHTML = "0%";
 	this._progressBar = progressBar;
 	progress.appendChild(progressBar);
-	button.appendChild(progress);
-	this._boxUI = envelope;
+	
 	//start asynchronous upload
 	this._fileResource.addResourceWithProgress(this._formData, this, this.uploadDone.bind(this));
-	return envelope;
+
+	if (this.isImage(this._name)){
+		this._img = new Image();
+		this._img.appendChild(progress);
+		return this._img;
+	}
+	else{
+		var envelope = document.createElement("div");
+		var button = document.createElement("div");
+		envelope.setAttribute("draggable", "true");
+		var icon = document.createElement("span");
+		icon.className = "glyphicon glyphicon-file";
+		button.appendChild(icon);
+		var a = document.createElement("a");
+		a.appendChild(document.createTextNode(this._name));
+		this._link = a;
+		button.appendChild(a);
+		envelope.appendChild(button);
+		//append progress bar
+		button.appendChild(progress);
+		this._boxUI = envelope;
+		return envelope;
+	}
 };
 
 File.prototype.uploadDone = function(address){
-	this._link.href = address;
+	if (this.isImage(this._name)){
+		this._img.src = address;
+	}
+	else{
+		this._link.href = address;
+	}
 	this._progress.style.display = "none";
 	this._boxUI.addEventListener("dragend", this.deleteFile.bind(this), false);
 }
+
+File.prototype.isImage = function(filename){
+	var arr = filename.split(".");
+	if (arr[1] == "jpg" || arr[1] == "jpeg" || arr[1] == "png" || arr[1] == "gif" || arr[1] == "bmp"){
+		return true;
+	}
+	return false;
+};
 
 File.prototype.deleteFile = function(e){
 	if (e.dataTransfer.dropEffect == 'none'){
@@ -947,6 +971,7 @@ TextInputComponent.prototype.buildComponent = function(){
 	this.buildTextarea();
 	this.buildDoneButton();
 
+
 	this._parent.addEventListener("dblclick", this.showInputUI.bind(this), false);
 	
 	//if brand new article is created (using button), show UI
@@ -990,11 +1015,13 @@ TextInputComponent.prototype.onDrop = function(e){
 	if (fileList.length > 0){
 		for (var i = 0; i < fileList.length; i++){
 			var file = fileList[i];
+			var uibox;
 			var formData = new FormData();
 			formData.append("file", file);
 			var uifile = new File(file.name, -1, formData, this._resource.urlBuilder.component.name, this.updateParent.bind(this));
 			this._files.push(uifile);
-			var uibox = uifile.getBoxUI();
+			uibox = uifile.getBoxUI();
+
 			uibox.addEventListener("dragstart", this.bootstrapDraggables.bind(this));
 			this._textarea.appendChild(uibox);
 		}

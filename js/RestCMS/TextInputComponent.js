@@ -22,6 +22,7 @@ TextInputComponent.prototype.buildComponent = function(){
 	this.buildTextarea();
 	this.buildDoneButton();
 
+
 	this._parent.addEventListener("dblclick", this.showInputUI.bind(this), false);
 	
 	//if brand new article is created (using button), show UI
@@ -65,11 +66,13 @@ TextInputComponent.prototype.onDrop = function(e){
 	if (fileList.length > 0){
 		for (var i = 0; i < fileList.length; i++){
 			var file = fileList[i];
+			var uibox;
 			var formData = new FormData();
 			formData.append("file", file);
 			var uifile = new File(file.name, -1, formData, this._resource.urlBuilder.component.name, this.updateParent.bind(this));
 			this._files.push(uifile);
-			var uibox = uifile.getBoxUI();
+			uibox = uifile.getBoxUI();
+
 			uibox.addEventListener("dragstart", this.bootstrapDraggables.bind(this));
 			this._textarea.appendChild(uibox);
 		}
