@@ -2,14 +2,14 @@
 	<head>
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
-		
+
 		<!-- Bootstrap main library (can be removed, you can use any stylesheet) -->
 		<link href="/js/bootstrap/dist/css/bootstrap.css" rel="stylesheet">
 		<!-- Bootstrap justified enhancement (can be removed, you can use any stylesheet) -->
 		<link href="/templates/default/css/justified.css" rel="stylesheet">
 		<!-- RestCMS css (DO NOT REMOVE) -->
 		<link rel="stylesheet" type="text/css" href="../../js/RestCMS/css/RestCMSDefault.css" />
-		
+
 		<title>RestCMS installation wizard</title>
 		<!-- JQUERY (jQuery is needed for RestCMS and Bootstrap as dependency, DO NOT REMOVE!)-->
 		<script src="/js/jquery/jquery.js" type="text/javascript"></script>
@@ -18,19 +18,19 @@
 		<script src="/js/RestCMS/RestCMScompiled.js" type="text/javascript"></script>
 		<!-- RestCMS initialization code (can be altered) -->
 		<script type="text/javascript">
-			var run = function(){				
+			var run = function(){
 				var article = new ArticleComponent("articles");
 				article.attachToDataComponent("articles");
-				
+
 				var pageHeader = new ArticleComponent("pageHeader");
 				pageHeader.attachToDataComponent("pageHeader");
-				
+
 				//var leftSidebar = new ArticleComponent("leftSidebar");
 				//leftSidebar.attachToClass("leftSidebar");
-				
+
 				var jumbotron = new ArticleComponent("jumbotron");
 				jumbotron.attachToClass("jumbotron");
-				
+
 				var main = new MainComponent();
 				main.attachToClass("main");
 				main.addPage("home");
@@ -40,7 +40,7 @@
 				main.registerPageComponent(jumbotron);
 				main.registerPageComponent(pageHeader);
 				main.setIndexPage("home", "home");
-				
+
 				RestCMS.setMainComponent(main);
 				//leftSidebar.buildComponent();
 			}
@@ -61,7 +61,7 @@
 
     <div class="container">
 		<form role="form" action="install.php" method="post">
-		
+
 		<!-- Nav tabs -->
 		<ul class="nav nav-tabs" id="stepTabs">
 			<li class="active disabled"><a href="#step1"><script type="text/javascript">document.write(_("Step"))</script> 1</a></li>
@@ -105,7 +105,7 @@
 						Please, be really careful here, without this setting the system cannot work at all!
 					</p>
 				</div>
-		
+
 				<div class="page-header">
 					<h2><script type="text/javascript">document.write(_("Timezone settings"))</script></h2>
 				</div>
@@ -123,15 +123,15 @@
 				  <li><a href="#" class="step2btn">Next step &rarr;</a></li>
 				</ul>
 			</div>
-			
+
 			<div class="tab-pane" id="step2">
 				<div class="page-header">
 					<h2><script type="text/javascript">document.write(_("Database configuration"))</script></h2>
 				</div>
 				<p>Here configure your database connection.</p>
-		
+
 				<div class="form-group">
-					<label for="DBTYPE">Type of Database 
+					<label for="DBTYPE">Type of Database
 						<span class="badge" data-toggle="tooltip" data-trigger="hover" data-original-title="Tooltip on left" title="Only MySQL database type is now supported. More databases will be added in near future.">
 							<span class="glyphicon glyphicon-info-sign">
 							</span>
@@ -142,9 +142,13 @@
 					</select>
 				</div>
 				<div class="form-group">
+                    <label for="DBHOST">Address of the database server</label>
+					<input type="text" class="form-control" id="DBHOST" name="DBHOST" placeholder="Enter address of the database server." default = "localhost"/>
+					<p class="help-block">Specify the database host address. It can be localhost, IP address, etc.</p>
+
 					<label for="DBNAME">Name of database</label>
 					<input type="text" class="form-control" id="DBNAME" name="DBNAME" placeholder="Enter name of the database" />
-					<p class="help-block">Create the database for RestCMS system (or obtain one from your provider). 
+					<p class="help-block">Create the database for RestCMS system (or obtain one from your provider).
 					Enter here the name of your database (e.g. the name you see in PhpMyAdmin or some other database management tool).</p>
 
 					<label for="DBUSER">Login</label>
@@ -158,8 +162,8 @@
 				  <li><a href="#" class="step3btn">Next step &rarr;</a></li>
 				</ul>
 			</div>
-			
-			<div class="tab-pane" id="step3">		
+
+			<div class="tab-pane" id="step3">
 				<div class="page-header">
 					<h2><script type="text/javascript">document.write(_("Google Plus Sign In Configuration"))</script></h2>
 				</div>
@@ -169,9 +173,9 @@
 					<a href="https://accounts.google.com/SignUp?continue=https%3A%2F%2Fwww.google.cz%2F&hl=cs" target="_blank" title="Create new Google account">create one</a>.
 				</p>
 				<p>
-					Now log into <a href="https://code.google.com/apis/console" target="_blank" title="Google Apis Console">Google Apis Console</a> and follow 
+					Now log into <a href="https://code.google.com/apis/console" target="_blank" title="Google Apis Console">Google Apis Console</a> and follow
 					<a href="https://developers.google.com/+/quickstart/javascript" target="_blank" title="Google Plus Sign In Tutorial">google tutorial</a>
-					for google sign in to obtain Client ID and Client secret keys. From the tutorial, follow Step 1 only, all other steps were already implemented in 
+					for google sign in to obtain Client ID and Client secret keys. From the tutorial, follow Step 1 only, all other steps were already implemented in
 					RestCMS system for you.
 				</p>
 				<p>
@@ -179,11 +183,11 @@
 					To <b>Redirect Uri</b> please enter the addresses you entered to JavaScript Origins, and the same once more with /index.html suffix (e.g.
 					http://yoursite.com and http://yoursite.com/index.html), with and without www if aplicable.
 				</p>
-		
+
 				<div class="form-group">
 					<label for="CLIENT_ID">Client ID</label>
 					<input type="text" class="form-control" id="CLIENT_ID" name="CLIENT_ID" placeholder="Enter Client ID key" />
-	
+
 					<label for="CLIENT_SECRET">Client secret</label>
 					<input type="text" class="form-control" id="CLIENT_SECRET" name="CLIENT_SECRET" placeholder="Enter Client Secret key" />
 				</div>
@@ -191,8 +195,8 @@
 				  <li><a href="#" class="step2btn">&larr; Previous step</a></li>
 				  <li><a href="#" class="recapbtn">Next step &rarr;</a></li>
 				</ul>
-			</div>		
-			<div class="tab-pane" id="recap">		
+			</div>
+			<div class="tab-pane" id="recap">
 				<div class="page-header">
 					<h2><script type="text/javascript">document.write(_("Recapitulation"))</script></h2>
 				</div>
@@ -212,7 +216,7 @@
 						</tr><tr>
 							<td>Database name</td><td id="recapDBNAME"></td>
 						</tr><tr>
-							<td>Database login</td><td id="recapDBUSER"></td>							
+							<td>Database login</td><td id="recapDBUSER"></td>
 						</tr><tr>
 							<td>Database password</td><td id="recapDBPASSWORD"></td>
 						</tr><tr>
@@ -231,14 +235,14 @@
 				</ul>
 				<input type="submit" class="btn btn-success btn-block btn-lg" value="install">
 			</div>
-			<div class="tab-pane" id="done">		
+			<div class="tab-pane" id="done">
 				<div class="page-header">
 					<h2><script type="text/javascript">document.write(_("Installation Complete"))</script></h2>
 				</div>
 				<p>Congratulations! Your RestCMS has been installed on your server. Lets start <a href="{$web_address}">use it</a>!
 			</div>
 		</div>
-		
+
 		<!-- Site footer -->
 		<div class="footer">
 			<p>RestCMS installation wizard, &copy; Jan Brejcha 2014</p>
@@ -260,7 +264,7 @@
 			</div>
 			-->
 		</div> <!-- /footer -->
-		<script type="text/javascript">		
+		<script type="text/javascript">
 			function onSignInCallback(authResult) {
 			  	RestCMS.onSignInCallback(authResult);
 			}
@@ -269,7 +273,7 @@
 		<script type="text/javascript">
 			//close the alert
 			$('#alert').hide();
-		
+
 			var verifyStep1 = function(){
 				var ok = true;
 				if ($('#PROJECTDIR').val() == '')
@@ -278,7 +282,7 @@
 					ok = false;
 				return ok;
 			};
-			
+
 			var verifyStep2 = function(){
 				var ok = true;
 				if ($('#DBTYPE').val() == '')
@@ -291,7 +295,7 @@
 					ok = false;
 				return ok;
 			};
-			
+
 			var verifyStep3 = function(){
 				var ok = true;
 				if ($('#CLIENT_ID').val() == '')
@@ -300,16 +304,16 @@
 					ok = false;
 				return ok;
 			};
-			
+
 			var showAlert = function(msg){
 				$('#alert').html(msg);
 				$('#alert').show();
 			}
-		
+
 			$(function () {
 				$("[data-toggle='tooltip']").tooltip();
 			});
-			
+
 			$('.step1btn').click(function (e) {
 			  $('#alert').hide();
 			  e.preventDefault()
@@ -353,7 +357,7 @@
 				  $('#recapDBPASSWORD').html($('#DBPASSWORD').val());
 				  $('#recapCLIENT_ID').html($('#CLIENT_ID').val());
 				  $('#recapCLIENT_SECRET').html($('#CLIENT_SECRET').val());
-			  
+
 				  //show recap
 				  $('#stepTabs [href="#recap"]').tab('show')
 			  }
