@@ -1,5 +1,7 @@
 
 
+
+
 /*
  This is a part of project named RestCMS. It is lightweight, extensible and easy to use
  content management system that stands on the idea that server should serve the
@@ -2075,6 +2077,9 @@ RestCMS.connectServer = function(){
 							var res = JSON.parse(result);
 							RestCMS.doLogin(res);
 					  },
+					   error: function(jq,status,message) {
+						alert('A jQuery error has occurred. Status: ' + status + ' - Message: ' + message);
+					   },
 					  processData: false,
 					  data: this._authResult.code
 				});

@@ -130,6 +130,9 @@ RestCMS.connectServer = function(){
 							var res = JSON.parse(result);
 							RestCMS.doLogin(res);
 					  },
+					   error: function(jq,status,message) {
+						alert('A jQuery error has occurred. Status: ' + status + ' - Message: ' + message);
+					   },
 					  processData: false,
 					  data: this._authResult.code
 				});
